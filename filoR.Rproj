@@ -13,7 +13,7 @@ RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
 BuildType: Website
-WebsitePath: /Users/rodrodr/Dropbox/Stats/Curso_Filologia/filoR
+WebsitePath: /Users/rodrodr/Dropbox/Stats/Curso_Filologia/filoR/_site
 
 SpellingDictionary: es_ES
 

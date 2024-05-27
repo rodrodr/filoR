@@ -124,5 +124,19 @@
     "title": "Tres sombreros de copaAnálisis de redes de diálogo en R",
     "section": "Redes de diálogo en “Tres sombreros de copa”",
     "text": "Redes de diálogo en “Tres sombreros de copa”\nAbrimos los datos\n\n# carga los datos de \"La Regenta\"\nload(\"../textos/Regenta.RData\")\n\nHacemos un análisis sumario de los capítulos\naaa"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "filoRAnálisis de textos literarios con R",
+    "section": "",
+    "text": "La preparación representa el momento"
+  },
+  {
+    "objectID": "index.html#preparación-de-los-textos",
+    "href": "index.html#preparación-de-los-textos",
+    "title": "filoRAnálisis de textos literarios con R",
+    "section": "",
+    "text": "La preparación representa el momento"
   }
 ]
