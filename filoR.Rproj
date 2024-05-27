@@ -13,5 +13,8 @@ RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
 BuildType: Website
+WebsitePath: rodrodr.github.io
 
 SpellingDictionary: es_ES
+
+ProjectName: filoR
