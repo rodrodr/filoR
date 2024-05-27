@@ -4,10 +4,16 @@ title: "<b>filoR</b><br>Análisis de textos literarios con R"
 
 ## Preparación de los textos
 
-La preparación representa el paso previo para convertir los textos en datos.
+La preparación representa el paso previo para convertir los textos en datos. En ese apartado, podrás encontrar cómo se han preparado los textos paso a paso.
+
 
 ## La Regenta
+
+En el siguiente tópico, aplicamos un conjunto de técnicas de análisis y visualización de datos a la novela "La Regenta" de Leopoldo Alas Clarín.
 
 [analisis.html](analisis.html)
 
 ## Tres sombreros de copa
+
+Finalmente, utilizamos la obra de teatro "Tres sombreros de copa" de Miguel Mihura como fuente para el empleo de técnicas de análisis de redes sociales en R a partir de textos literarios.
+

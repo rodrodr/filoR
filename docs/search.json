@@ -11,28 +11,28 @@
     "href": "index.html",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "",
-    "text": "La preparación representa el paso previo para convertir los textos en datos."
+    "text": "La preparación representa el paso previo para convertir los textos en datos. En ese apartado, podrás encontrar cómo se han preparado los textos paso a paso."
   },
   {
     "objectID": "index.html#preparación-de-los-textos",
     "href": "index.html#preparación-de-los-textos",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "",
-    "text": "La preparación representa el paso previo para convertir los textos en datos."
+    "text": "La preparación representa el paso previo para convertir los textos en datos. En ese apartado, podrás encontrar cómo se han preparado los textos paso a paso."
   },
   {
     "objectID": "index.html#la-regenta",
     "href": "index.html#la-regenta",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "La Regenta",
-    "text": "La Regenta\nanalisis.html"
+    "text": "La Regenta\nEn el siguiente tópico, aplicamos un conjunto de técnicas de análisis y visualización de datos a la novela “La Regenta” de Leopoldo Alas Clarín.\nanalisis.html"
   },
   {
     "objectID": "index.html#tres-sombreros-de-copa",
     "href": "index.html#tres-sombreros-de-copa",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "Tres sombreros de copa",
-    "text": "Tres sombreros de copa"
+    "text": "Tres sombreros de copa\nFinalmente, utilizamos la obra de teatro “Tres sombreros de copa” de Miguel Mihura como fuente para el empleo de técnicas de análisis de redes sociales en R a partir de textos literarios."
   },
   {
     "objectID": "prepa.html",
