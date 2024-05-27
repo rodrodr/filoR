@@ -2,35 +2,11 @@
 title: "<b>Preparación</b><br>Preparación de los textos en R"
 ---
 
-```{r setup, include=FALSE}
-
-load("../textos/Tres_sombreros_de_copa.RData")
-
-load("../textos/Regenta.RData")
+```{r setup, include=FALSE, message=F, warning=F, error=F}
 
 library(quanteda)
-
-# conviequanteda# convierte en un documento corpus
-cp <- corpus(regc, text_field = "texto")
-
-# define los capítulos como nombre
-# de los documentos
-docnames(cp) <- regc$capitulo
-
-
-dic <- dictionary(
-  list(
-    familia=c("padre", "madre", "hijo", "hija", "hermano", "hermana"),
-    sociedad=c("vetustense","señor","puebl","ciudad","conversa","amig","visit"),
-    iglesia=c("cura","obispo","sacerdo","confesión","religi","canónig","capilla","basilica","cabildo","diócesis","obispado","sacrist","confes","monaguillo","Panteón","trascoro"),
-    economia=c("dinero","deuda","negoci","trabaj","fortuna","rico","rica"),
-    sentimientos=c("culpa","alegr","amor","remordimiento","ridículo","vergüenza","triste"),
-    misticismo=c("Fermín de Pas","magistral","espirit","dios"),
-    adulterio=c("Álvaro Mesía","Presidente del Casino", "marido", "placer", "pasión", "amante","amorío"),
-    espacio=c("casino","catedral","vivero","casa","espolón","teatro","Encimada"),
-    tiempo=c("otoño","verano","invierno","primavera","semana santa","navidad")
-  )
-)
+library(stringi)
+library(readr)
 
 ```
 
@@ -44,9 +20,255 @@ Dos tipos de texto. De un lado, una novela. De otro, una obra de teatro. Abren l
 
 ## Novela
 
-Abrimos los 
+Resulta muy sencillo descargar la novela "La Regenta". Podemos emplear el paquete **gutenbergr** para descargar el texto directamente en R y trabajar con él. Solo tenemos que añadir un paso más al trabajo, que es convertir la codificación de caracteres a "latin1" para evitar problemas con las tildes.
+
+```{r}
+
+# Abre la librería gutenbergr
+# para bajar el texto
+library(gutenbergr)
+
+# Baja el texto de "La Regenta"
+# cuyo id es igual 17073
+re <- gutenberg_download(gutenberg_id = 17073, 
+                         verbose = FALSE)
+
+# Cambia la codificación de caracteres a
+# a latin1 para evitar problemas con las tildes
+Encoding(re$text) <- "latin1"
+
+# Convierte el texto en un solo string
+re <- paste0(re$text, 
+             collapse = "\n")
+
+
+
+```
+
+Con ese sencillo primer paso, ya tenemos la novela en nuestro ordenador. No obstante, hacen falta algunos pasos adicionales para convertir el texto en una base de datos que podamos emplear para hacer comparaciones, análisis de redes de palabras, etc.
+
+El primer paso es eliminar los saltos de línea y recuperar la estructura de los párrafos:
+
+```{r}
+
+# Carga el paquete stringi
+# que permite trabajar con expresiones regulares
+# y otras tareas de manipulación
+# de textos
+library(stringi)
+
+# Corrige los párrafos para que no tengan
+# un salto de línea al final de cada frase
+rx <- stri_replace_all_regex(
+            re,
+            "(\\S|\\p{L})(\n)(\\S{1}|\\p{L})","$1 $3")
+
+# Carga el paquete readr, que permite
+# convertir textos en vectores
+library(readr)
+
+# Vuelve a seleccionar los párrafos
+re <- read_lines(rx)
+
+```
+
+Luego, debemos identificar los capítulos de la novela. En este caso, los capítulos están marcados con un número y un título. Podemos emplear una expresión regular para identificarlos y separarlos del resto del texto:
+
+```{r}
+
+
+# Encuentra el prólogo, los tomos y los capítulos
+pro <- grep("Prólogo",re) # prólogo
+tm <- c(grep("Tomo",re), 
+        grep("TOMO",re)) # tomos - índice
+tx <- re[tm] # tomos - textos
+cap <- which(
+          stri_detect_regex(re, 
+                            "^(--)([A-Z]+)(--)$")==TRUE) # capítulos
+cx <- re[cap] # capítulos - textos
+
+# Genera un vector que identifica qué líneas
+# pertenecen al título y al prólogo
+ti <- rep("Título", 
+          length(1:(pro-1)))
+
+pro <- rep("Prólogo", 
+           length(pro:(tm[1]-1)))
+
+# Genera el vector ta que identifica qué líneas
+# pertenecen a cada tomo
+ta <- vector()
+
+for(i in 1:(length(tm)-1)){
+  
+  ta <- c(ta, 
+          rep(tx[i], 
+              length((tm[i]):(tm[i+1]-1))))
+  
+}
+
+ta <- c(ta, 
+        rep(tx[length(tx)],
+            length((tm[length(tm)]):length(re))))
+
+
+# Genera el vector ca que identifica qué líneas
+# pertenecen a cada capítulo
+ca <- vector()
+
+for(i in 1:(length(cap)-1)){
+  
+  ca <- c(ca, 
+          rep(cx[i], 
+              length((cap[i]):(cap[i+1]-1))))
+  
+}
+
+ca <- c(ca, 
+        rep(cx[length(cx)], 
+            length((cap[length(cap)]):length(re))))
+
+# Crea un data frame con los textos, la 
+# identificación, de la parte y del capítulo
+pt <- c(ti,pro,ta)
+cp <- c(rep("Previa", 58),
+        ca)
+dx <- data.frame(parte = pt, 
+                 capitulo= cp, 
+                 texto = re)
+
+```
+
+
+Ahora, nos toca transformar la numeración de los capítulos para poder mantener un orden secuencial. Además, nos interesa saber el número del párrafo en cada capítulo, para poder mencionar exactamente dónde se encuentra una referencia exacta en el texto. También queremos eliminar la información que no nos interesa, como los espacios en blanco entre párrafos:
+
+```{r warning=FALSE, error=F, message=FALSE}
+
+# Elimina los guiones de al identificación
+# de cada capítulo
+dx$capitulo <- gsub("--","",dx$capitulo)
+
+# Convierte los textos de identificación
+# de los capítulos en números romanos
+# y luego los convierte en numérico
+dx$roman <- as.roman(dx$capitulo)
+dx$roman <- as.numeric(dx$roman)
+
+# Asigna los valores numéricos a los capítulos
+dx$capitulo[! is.na(dx$roman)] <- dx$roman[! is.na(dx$roman)]
+dx$capitulo[is.na(dx$roman)] <- dx$parte[ is.na(dx$roman)]
+
+# Añade un 0 (cero) para los capítulos menores
+# a 10.
+dx$capitulo[nchar(dx$capitulo)==1] <- paste0("0",dx$capitulo[nchar(dx$capitulo)==1])
+
+# Añade 001 y 002 para el título y el prólogo.
+# De ese modo, quedan los primeros una vez se
+# ordene la base de datos.
+dx$capitulo[dx$capitulo=="Título"] <- "001 - Título"
+dx$capitulo[dx$capitulo=="Prólogo"] <- "002 - Prólogo"
+
+# Elimina la información que no interesa
+dx <- dx[dx$parte!=dx$texto,]
+dx$roman <- NULL
+dx <- dx[dx$texto!="",]
+
+# Añade un número de párrafo a cada párrafo 
+# de cada capítulo. Así que siempre se reinicia
+# en cuenteo a cada nuevo capítulo.
+library(dplyr)
+dx <- dx |> 
+  group_by(capitulo) |> 
+  mutate(parrafo = row_number())
+
+# Elimina los espacios en blanco al principio y
+# al final del texto
+dx$texto <- trimws(dx$texto)
+
+# Selecciona solo las variables.de interés
+dx <- dx[,c("parte",
+            "capitulo",
+            "parrafo",
+            "texto")]
+
+
+# Visualiza los resultados
+library(reactable)
+reactable(dx, 
+          resizable = T, 
+          wrap = F)
+
+```
+
+
+El paso siguiente consiste en crear una versión distinta del mismo texto. Pero ahora, la novela será dividida de forma que cada observación en la base de datos corresponderá a un capítulo completo:
+
+```{r warning=FALSE, error=FALSE, message=FALSE}
+
+# Genera una base de datos agregada
+# por capítulo (y no por párrafo, como
+# la anterior)
+dc <- aggregate(
+          list(texto=dx$texto), 
+          by=list(parte=dx$parte,
+                  capitulo=dx$capitulo), 
+          FUN=paste, 
+              collapse="\n\n")
+
+# Visualiza los resultados
+reactable(dc, 
+          resizable = T, 
+          wrap = F)
+
+```
+
+Finalmente, estandarizamos los nombres de las dos bases de datos y, a continuación, las guardamos en un archivo de R que será empleado en los análisis:
+
+```{r warning=FALSE, error=FALSE, message=FALSE, eval=F}
+
+# Estandariza los nombres de las
+# bases de datos
+regp <- dx
+regc <- dc
+
+# Guarda los resultados
+save(regp, regc, file="textos/Regenta.RData")
+
+```
+
 
 ## Obra de teatro
 
-sdsd
+La obra de Mihura se puede descargar [aquí](https://www.edu.xunta.gal/centros/cpilorenzobaleiron/system/files/u2/mihura__miguel_-_tres_sombreros_de_copa.pdf){target="_blank"}
+
+```{r message=F, warning=F, error=F}
+
+# Carga los paquetes necesarios
+# para el tratamiento de los textos
+library(pdftools)   # Lee el pdf original de la obra
+library(readr)      # Lee las líneas del texto 
+library(stringi)    # Funciones de manipulación de texto
+
+# Lee el pdf de la obra de Mihura
+pd <- pdftools::pdf_text("https://www.edu.xunta.gal/centros/cpilorenzobaleiron/system/files/u2/mihura__miguel_-_tres_sombreros_de_copa.pdf")
+
+
+
+# Elimina los espacios en blanco múltiples entre
+# palabras
+px <- read_lines(pd)
+px <- trimws(px)
+px <- gsub("\\s+"," ", px, perl = T)
+
+# Elimina las cabeceras de las páginas y los
+# números de página del PDF 
+nn <- which(px%in%c("3 sombreros de copa Miguel Mihura"))
+pd <- px[-c(nn-1,nn)]
+
+# Elimina el número de la última página
+pd <- pd[-length(pd)]
+
+```
+
+
 
