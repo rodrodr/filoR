@@ -1,0 +1,31 @@
+---
+title: "<b>Tres sombreros de copa</b><br>Análisis de redes de diálogo en R"
+---
+
+```{r setup, include=FALSE}
+
+load("../textos/Tres_sombreros_de_copa.RData")
+
+library(quanteda)
+
+```
+
+## Introducción
+
+El R permite diferentes tipos de análisis de textos.
+
+
+## Redes de diálogo en "Tres sombreros de copa"
+
+Abrimos los datos
+
+```{r}
+
+# carga los datos de "La Regenta"
+load("../textos/Regenta.RData")
+
+```
+
+Hacemos un análisis sumario de los capítulos
+
+aaa

@@ -1,0 +1,11 @@
+---
+title: "<b>filoR</b><br>Análisis de textos literarios con R"
+---
+
+## Preparación de los textos
+
+## La Regenta
+
+[analisis.html](analisis.html)
+
+## Tres sombreros de copa

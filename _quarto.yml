@@ -1,0 +1,27 @@
+project:
+  type: website
+  render:
+    - "*.qmd"
+    
+website:
+  title: "filoR"
+  sidebar:
+    contents:
+      - href: index.qmd
+        text: Home
+      - href: prepa.html
+        text: Preparación
+      - href: regenta.html
+        text: La Regenta
+      - href: sombreros.html
+        text: Tres sombreros de copa
+        
+        
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: source
+

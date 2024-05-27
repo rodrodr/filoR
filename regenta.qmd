@@ -1,0 +1,320 @@
+---
+title: "<b>La Regenta</b><br>Análisis de la novela en R"
+---
+
+```{r setup, include=FALSE}
+
+load("../textos/Tres_sombreros_de_copa.RData")
+
+load("../textos/Regenta.RData")
+
+library(quanteda)
+
+# conviequanteda# convierte en un documento corpus
+cp <- corpus(regc, text_field = "texto")
+
+# define los capítulos como nombre
+# de los documentos
+docnames(cp) <- regc$capitulo
+
+
+dic <- dictionary(
+  list(
+    familia=c("padre", "madre", "hijo", "hija", "hermano", "hermana"),
+    sociedad=c("vetustense","señor","puebl","ciudad","conversa","amig","visit"),
+    iglesia=c("cura","obispo","sacerdo","confesión","religi","canónig","capilla","basilica","cabildo","diócesis","obispado","sacrist","confes","monaguillo","Panteón","trascoro"),
+    economia=c("dinero","deuda","negoci","trabaj","fortuna","rico","rica"),
+    sentimientos=c("culpa","alegr","amor","remordimiento","ridículo","vergüenza","triste"),
+    misticismo=c("Fermín de Pas","magistral","espirit","dios"),
+    adulterio=c("Álvaro Mesía","Presidente del Casino", "marido", "placer", "pasión", "amante","amorío"),
+    espacio=c("casino","catedral","vivero","casa","espolón","teatro","Encimada"),
+    tiempo=c("otoño","verano","invierno","primavera","semana santa","navidad")
+  )
+)
+
+```
+
+## Introducción
+
+El R permite diferentes tipos de análisis de textos.
+
+Dos tipos de texto. De un lado, una novela. De otro, una obra de teatro. Abren la posibilidad de comparar los resultados de los análisis de textos literarios.
+
+## Análisis de la novela "La Regenta"
+
+Abrimos los datos
+
+```{r}
+
+# carga los datos de "La Regenta"
+load("../textos/Regenta.RData")
+
+```
+
+Hacemos un análisis sumario de los capítulos
+
+```{r}
+
+
+# carga el paquete quanteda para 
+# algunos análisis
+library(quanteda)
+
+# convierte en un documento corpus
+cp <- corpus(regc, text_field = "texto")
+
+# define los capítulos como nombre
+# de los documentos
+docnames(cp) <- regc$capitulo
+
+# muestra estadísticas básicas de
+# cada capítulo
+summary(cp)
+
+```
+
+Hacemos un análisis de frecuencia de palabras
+
+```{r}
+
+# convierte en una matriz de términos
+dtm <- dfm(tokens(cp, remove_punct = TRUE, 
+                  remove_numbers = TRUE, 
+                  remove_symbols = TRUE), 
+           tolower = TRUE)
+
+dtm <- dfm_remove(dtm, c(stopwords("es"),"si"))
+
+# muestra las 50 palabras más frecuentes
+topfeatures(dtm, 50)
+
+```
+
+diccionario
+
+```{r, warning=F, message=F, error=F}
+
+dic <- dictionary(
+  list(
+    familia=c("padre", "madre", "hijo", "hija", "hermano", "hermana"),
+    sociedad=c("vetustense","señor","puebl","ciudad","conversa","amig"),
+    iglesia=c("cura","obispo","sacerdo","confesión","religi","canónig","capilla"),
+    economia=c("dinero","deuda","negoci","trabaj","fortuna","rico","rica"),
+    sentimientos=c("culpa","alegr","amor","remordimiento","ridículo","vergüenza","triste"),
+    misticismo=c("Fermín de Pas","Fermín","\\bde Pas\\b", "magistral", "espirit","dios"),
+    adulterio=c("Álvaro Mesía","Álvaro","Mesía","Presidente del Casino", "marido", "placer", "pasión", "amante","amorío"),
+    espacio=c("casino","catedral","vivero","casa","espolón","teatro"),
+    tiempo=c("otoño","verano","invierno","primavera","semana santa","navidad")
+  )
+)
+    
+library(tenet)
+    
+tagCorpus(cp, dic, reshape.to = "sentence")
+
+    
+
+```
+
+```{r, warning=F, message=F, error=F, fig.width=10, fig.height=8}
+
+dicf <- dictionary(
+  list(
+    familia=c("padre", "madre", "hijo", "hija", "hermano", "hermana"),
+    sociedad=c("vetustense","señor","puebl","ciudad","conversa","amig")
+))
+
+
+plotLexDiv(cp, dicf, title ="La Regenta", subtitle = "Familia e iglesia en la novela", palette = pal$cat.awtools.spalette.6[1:2])
+
+```
+
+```{r, warning=F, message=F, error=F}
+
+xy <- countKeywords(cp, 
+                    dic, 
+                    rel.freq = F, 
+                    quietly = TRUE)
+
+# Elimina los términos no encontrados
+xy <- xy[xy$frequency>0,]
+
+xy$groups <- NULL
+
+forceDirectedTree(xy,value_col = "frequency",
+                  palette = pal$cat.awtools.bpalette.16, 
+                  max.radius = 50, 
+                  height = 500)
+
+```
+
+lo mismo se puede ver así:
+
+```{r, warning=F, message=F, error=F}
+
+
+plotVoronoiTree(data = xy,
+                value_col = "frequency")
+
+```
+
+dd
+
+```{r, warning=F, message=F, error=F}
+
+
+dich <- dictionary(
+  list(
+    hombres=
+      list(
+           Alvaro=c("Álvaro Mesía",
+                    "Álvaro",
+                    "Mesía",
+                    "presidente del casino"),
+           Saturnino=c("Saturnino Bermúdez",
+                       "Saturnino",
+                       "Bermúdez",
+                       "Saturno",
+                       "Saturnillo"),
+           Fermin=c("Magistral",
+                    "Provisor",
+                    "Fermín",
+                    "De Pas",
+                    "Fermín de Pas",
+                    "Magistral"),
+           Victor=c("Víctor",
+                    "Víctor Quintanar",
+                    "Quintanar"),
+           Otros=c("Custodio",
+                   "Frígilis",
+                   "Anacleto",
+                   "Carlos",
+                   "Orgaz",
+                   "Bismark",
+                   "Celedonio",
+                   "monaguillo",
+                   "Pedro",
+                   "Palomo",
+                   "Cayetano",
+                   "Cayetano Ripamilán",
+                   "Ripamilán",
+                   "Cenceño",
+                   "Pompeyo",
+                   "Pompeyo Guimarán",
+                   "Guimarán",
+                   "Paco",
+                   "Paquito",
+                   "don Santos")
+           ),
+    mujeres=
+      list(
+        Ana=c("Ana",
+              "Anita",
+              "Regenta"),
+        Obdulia=c("Obdulia",
+                  "Obdulia Fandiño",
+                  "Fandiño",
+                  "Obdulita"),
+        Otras=c("Visitación",
+                "Petra",
+                "Camila",
+                "doña Anuncia",
+                "Anuncita",
+                "Águeda",
+                "doña Paula",
+                "marquesa",
+                "doña Petronila")
+    )
+  )
+)
+
+
+
+
+xp <- countKeywords(cp, 
+                    dich, 
+                    rel.freq = F, 
+                    group.var = "capitulo",
+                    quietly = TRUE)
+
+# Agrega los resultados por los dos niveles
+# de código del diccionario
+xx <- aggregate(list(frequency=xp$frequency), 
+                by=list(groups=xp$groups, 
+                        level1=xp$level2), 
+                sum, na.rm=T)
+
+# Elimina los términos no encontrados
+# en el corpus
+xx <- xx[xx$frequency>0,]
+
+# Ordena por capítulo
+xx <- xx[order(xx$groups),]
+
+plotSankey(xx, 
+           from = "level1", 
+           to="groups", 
+           value = "frequency", 
+           opacity = 0.05)
+ 
+
+
+```
+
+dddd
+
+```{r, warning=F, message=F, error=F}
+
+# Reorganiza el corpus según
+# sentencias o frases
+cs <- corpus_reshape(cp, "sentences")
+
+# Calcula la frecuencia en la
+# que dos codigos del mismo 
+# diccionario aparecen juntos
+# en cada frase
+d1 <- matchCodes(cs, 
+                dic, 
+                level = 1, 
+                quietly=TRUE)
+
+# Ordena los resultados de mayor a menor
+d1 <- d1[order(d1$value, decreasing = T),]
+
+
+plotChord(d1, 
+          from = "term1", 
+          to ="term2", 
+          value= "value")
+
+```
+
+Ahora con los personajes
+
+```{r, warning=F, message=F, error=F}
+
+# Reorganiza el corpus según
+# sentencias o frases
+cs <- corpus_reshape(cp, "sentences")
+
+# Calcula la frecuencia en la
+# que dos codigos del mismo 
+# diccionario aparecen juntos
+# en cada frase
+d1 <- matchCodes(cs, 
+                dich, 
+                level = 2, 
+                quietly=TRUE)
+
+# Ordena los resultados de mayor a menor
+d1 <- d1[order(d1$value, decreasing = T),]
+
+
+plotChord(d1, 
+          from = "term1", 
+          to ="term2", 
+          value= "value", elementId = "chord2")
+
+```
+
+aaa

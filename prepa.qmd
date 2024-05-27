@@ -1,0 +1,52 @@
+---
+title: "<b>Preparación</b><br>Preparación de los textos en R"
+---
+
+```{r setup, include=FALSE}
+
+load("../textos/Tres_sombreros_de_copa.RData")
+
+load("../textos/Regenta.RData")
+
+library(quanteda)
+
+# conviequanteda# convierte en un documento corpus
+cp <- corpus(regc, text_field = "texto")
+
+# define los capítulos como nombre
+# de los documentos
+docnames(cp) <- regc$capitulo
+
+
+dic <- dictionary(
+  list(
+    familia=c("padre", "madre", "hijo", "hija", "hermano", "hermana"),
+    sociedad=c("vetustense","señor","puebl","ciudad","conversa","amig","visit"),
+    iglesia=c("cura","obispo","sacerdo","confesión","religi","canónig","capilla","basilica","cabildo","diócesis","obispado","sacrist","confes","monaguillo","Panteón","trascoro"),
+    economia=c("dinero","deuda","negoci","trabaj","fortuna","rico","rica"),
+    sentimientos=c("culpa","alegr","amor","remordimiento","ridículo","vergüenza","triste"),
+    misticismo=c("Fermín de Pas","magistral","espirit","dios"),
+    adulterio=c("Álvaro Mesía","Presidente del Casino", "marido", "placer", "pasión", "amante","amorío"),
+    espacio=c("casino","catedral","vivero","casa","espolón","teatro","Encimada"),
+    tiempo=c("otoño","verano","invierno","primavera","semana santa","navidad")
+  )
+)
+
+```
+
+
+
+## Introducción
+
+El R permite diferentes tipos de análisis de textos.
+
+Dos tipos de texto. De un lado, una novela. De otro, una obra de teatro. Abren la posibilidad de comparar los resultados de los análisis de textos literarios.
+
+## Novela
+
+Abrimos los 
+
+## Obra de teatro
+
+sdsd
+
