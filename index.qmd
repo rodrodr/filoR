@@ -4,7 +4,7 @@ title: "<b>filoR</b><br>Análisis de textos literarios con R"
 
 ## Preparación de los textos
 
-La preparación representa el momento
+La preparación representa el paso previo para convertir los textos en datos.
 
 ## La Regenta
 
