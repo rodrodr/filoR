@@ -10,6 +10,7 @@ load("../textos/Regenta.RData")
 
 library(quanteda)
 
+regc <- regc[3:nrow(regc),]
 # conviequanteda# convierte en un documento corpus
 cp <- corpus(regc, text_field = "texto")
 
@@ -32,33 +33,174 @@ dic <- dictionary(
   )
 )
 
+dic.per <- dictionary(
+  list(
+    hombres=
+      list(
+        Alvaro=c("Álvaro Mesía",
+                 "Álvaro",
+                 "Mesía",
+                 "presidente del casino"),
+        Saturnino=c("Saturnino Bermúdez",
+                    "Saturnino",
+                    "Bermúdez",
+                    "Saturno",
+                    "Saturnillo"),
+        Fermin=c("Magistral",
+                 "Provisor",
+                 "Fermín",
+                 "De Pas",
+                 "Fermín de Pas",
+                 "Magistral"),
+        Victor=c("Víctor",
+                 "Víctor Quintanar",
+                 "Quintanar"),
+        Agustinito="Agustinito",
+        Amadeo="Amadeo",
+        Anacleto="Anacleto",
+        Anselmo="Anselmo",
+        Antero="Antero",
+        Antón="Antón Raíces",
+        Antonio="Antonio",
+        Barcaza="Barcaza",
+        Basilio="Basilio",
+        Bautista="Bautista",
+        Bedoya="Bedoya",
+        Belisario="Belisario",
+        Benítez="Benítez",
+        Bismark="Bismark",
+        Campillo=c("Campillo","\\b[C]hato\\b"),
+        Carlos="Carlos",
+        Pelaez="Peláez",
+        Ripamilan=c("Cayetano",
+                    "Cayetano Ripamilán",
+                    "Ripamilán"),
+        Celedonio="Celedonio",
+        Colás="Colás",
+        Corujedo="marqués de Corujedo",
+        Frígilis=c("Frígilis","Crespo"),
+        Custodio=c("Custodio"),
+        Cuervo=c("Olías de Cuervo","señor Cuervo"),
+        Diego="Diego",
+        Escosura="Escosura",
+        Estudiante=c("\\b[E]studiante\\b","Pepe","Trabuco"),
+        Foja="Foja",
+        Fortunato="Fortunato",
+        "Francisco de Asís"="Francisco de Asís",
+        "Francisco de Pas"="Francisco de Pas",
+        "Francisco de Osuma"="Francisco de Osuna",
+        Páez=c("Francisco Páez", "señor Páez", "señor de Páez"),
+        "Francisco Carraspique"="Francisco Carraspique",
+        Froilán="Froilán",
+        Frutos=c("don Frutos","Frutos Redondo"),
+        Fulgosio="Fulgosio",
+        Germán="Germán",
+        Glocester=c("Glocester","Restituto"),
+        Infanzón=c("señor Infanzón", "el Infanzón"),
+        Iriarte="Iriarte",
+        Joaquinito="Joaquinito",
+        Juanito="Juanito",
+        Leandro="Leando",
+        Maroto="Maroto",
+        Vegallana=c("marqués de Vegallana","\\s{1}[M]arqués\\b"),
+        Martínez="Martínez",
+        Matías="Matías",
+        Matiella="Matiella",
+        monaguillo="monaguillo",
+        "señor Orgaz"="señor Orgaz",
+        Palma="\\b[P]alma\\b",
+        Paquito=c("Paco","Paquito"),
+        Palomo=c("Palomo","Rodríguez"),
+        Parcerisa="Parcerisa",
+        Pedro="Pedro",
+        Perales="\\b[P]erales\\b",
+        Pinón="Pinón",
+        Pompeyo=c("Pompeyo","Pompeyo Guimarán","Guimarán"),
+        Robustiano="Robustiano",
+        Roque="señor Roque",
+        Rosendo="Rosendo",
+        Santos="don Santos",
+        Sousa="Sousa",
+        Trifón="Trifón",
+        Vinagre="\\b[V]inagre\\b",
+        Vinculete="Vinculete"
+        ),
+    mujeres=
+      list(
+        Ana=c("Ana",
+              "Anita",
+              "Regenta"),
+        Obdulia=c("Obdulia",
+                  "Obdulia Fandiño",
+                  "Fandiño",
+                  "Obdulita"),
+        Agapita="Agapita",
+        Águeda="Águeda",
+        Angelina="Angelina",
+        Anunciación=c("Anuncita","doña Anuncia"),
+        Camila="Camila",
+        Carolina=c("Carolina","Señora de Infanzón", "la Infanzón"),
+        Celestina="Celestina",
+        Edelmira="Edelmira",
+        Emma="Emma",
+        Fabiolita="Fabiolita",
+        Fulgencia="Fulgencia",
+        Gertrudis="Gertrudis",
+        "La González"="la González",
+        Juana="Juana",
+        Lola="Lola",
+        Lucía="doña Lucía",
+        Marquesa=c("marquesa","Rufina"),
+        Olvido="Olvido",
+        Paula="doña Paula",
+        Pepa="Pepa",
+        Perpétua="Guimarán, Perpétua",
+        Pilar="\\b[P]ilar\\b",
+        Petra="Petra",
+        Petrolina="doña Petronila",
+        Ramona="Ramona",
+        Rita="\\bRita\\b",
+        Rosa="\\bRosa\\b",
+        Rosita="Rosita",
+        Rudesinda="Rudesinda",
+        Servanda="Servanda",
+        Társila="Társila",
+        Teresa="\\b[T]eresa\\b",
+        Teresina="Teresina",
+        Úrsula="Úrsula",
+        Visita=c("Visitación","\\b[V]isita\\b"),
+        "Viuda de Corujedo"="viuda del marqués de Corujedo"
+        )
+  )
+)
+
+
 ```
 
 ## Introducción
 
-El R permite diferentes tipos de análisis de textos.
+En este apartado, se analiza la obra "La Regenta" de Leopoldo Alas Clarín a partir de diferentes técnicas de análisis de contenido. Se tratan, en su mayor parte, de acercamientos estadísticos o cuantitativos a los textos literarios. Por lo tanto, representan una visión limitada de la obra y solo complementaria a la lectura y el análisis cualitativo detenido de la misma.  
 
-Dos tipos de texto. De un lado, una novela. De otro, una obra de teatro. Abren la posibilidad de comparar los resultados de los análisis de textos literarios.
+Nos acercaremos al texto, primero, intentando descubrir cuáles palabras se destacan, sus frecuencias y distribuciones. Luego, analizaremos la obra desde la perspectiva de los personajes, sus relaciones y sus apariciones en la obra.
 
-## Análisis de la novela "La Regenta"
 
-Abrimos los datos
+## Las palabras que cuentan
+
+El primer paso del análisis consiste en cargar los datos que hemos preparado en la sección de [preparación de los datos](prepa.html) y convertirlo en un objeto de tipo *corpus*. Para ello, emplearemos el paquete de R llamado **quanteda**, que resulta bastante completo para el análisis de contenido. 
+
+El código abajo carga los datos en la memoria, los convierte en un corpus y muestra algunas estadísticas básicas de los capítulos de la obra, como el número de palabras (*tokens*), el número de palabras únicas (*types*) y la cantidad de frases.
 
 ```{r}
 
 # carga los datos de "La Regenta"
 load("../textos/Regenta.RData")
 
-```
-
-Hacemos un análisis sumario de los capítulos
-
-```{r}
-
-
 # carga el paquete quanteda para 
 # algunos análisis
 library(quanteda)
+
+# Elimina el título y el prólogo
+regc <- regc[3:nrow(regc),]
 
 # convierte en un documento corpus
 cp <- corpus(regc, text_field = "texto")
@@ -69,16 +211,19 @@ docnames(cp) <- regc$capitulo
 
 # muestra estadísticas básicas de
 # cada capítulo
-summary(cp)
+reactable::reactable(summary(cp))
 
 ```
 
-Hacemos un análisis de frecuencia de palabras
+Vemos que los treinta capítulos de la obra tienen una extensión que va de poco más de ocho mil hasta aproximadamente veintiún mil palabras. No resulta nada sorprendente que las palabras únicas y el número de frases varían de forma proporcional.
+
+Más interesante resulta explorar cuáles palabras se destacan en la obra. Para ello, emplearemos una técnica llamada *análisis de frecuencia de palabras*. En este caso, emplearemos una matriz de términos de documentos (*document-feature matrix*), que es una representación matricial de los textos en la que las filas representan los documentos y las columnas las palabras. Cada celda de la matriz contiene el número de veces que una palabra aparece en un documento.
+
 
 ```{r}
 
 # convierte en una matriz de términos
-dtm <- dfm(tokens(cp, remove_punct = TRUE, 
+dtm <- dfm( tokens(cp, remove_punct = TRUE, 
                   remove_numbers = TRUE, 
                   remove_symbols = TRUE), 
            tolower = TRUE)
@@ -90,30 +235,80 @@ topfeatures(dtm, 50)
 
 ```
 
+En este caso, hemos considerado palabras aisladas, pero podemos repetir el análisis con bigramas o trigramas, que son secuencias de dos o tres palabras consecutivas. Estas combinaciones permiten encontrar secuencias de ideas que pueden revelar ciertos contenidos o patrones en el texto.
+
+```{r}
+
+tk <- tokens(cp, remove_punct = TRUE, 
+                  remove_numbers = TRUE, 
+                  remove_symbols = TRUE)
+
+tk <- tokens_remove(tk, stopwords("es"))
+
+bi <- tokens_ngrams(tk, n = 2)
+
+# convierte en una matriz de términos
+dtm <- dfm(bi)
+
+# muestra los 50 bigramas más frecuentes
+topfeatures(dtm, 50)
+
+tri <- tokens_ngrams(tk, n = 3)
+
+# convierte en una matriz de términos
+dtm <- dfm(tri)
+
+# muestra los 50 trigramas más frecuentes
+topfeatures(dtm, 50)
+
+```
+
+¿Qué vemos en los resultados de los bigramas y trigramas? El primer patrón que emerge es la presencia de nombres de personajes, como "don Víctor Quintanar", "don Álvaro" o "do Fermín". También aparecen nombres de lugares, como "Vetusta" o "Santa Cruz". Por último, encontramos algunas secuencias que parecen describir acciones o situaciones, como "señor marqués" o "señor don Fermín".
+
+
+
+
+
+## Diccionarios y codificación temática 
+
 diccionario
+
+
 
 ```{r, warning=F, message=F, error=F}
 
 dic <- dictionary(
   list(
-    familia=c("padre", "madre", "hijo", "hija", "hermano", "hermana"),
-    sociedad=c("vetustense","puebl","ciudad","conversa","amig"),
-    iglesia=c("cura","obispo","sacerdo","confesión","religi","canónig","capilla"),
-    economia=c("dinero","deuda","negoci","trabaj","fortuna","rico","rica"),
-    sentimientos=c("culpa","alegr","amor","remordimiento","ridículo","vergüenza","triste"),
-    misticismo=c("Fermín de Pas","Fermín","\\bde Pas\\b", "magistral", "espirit","dios"),
-    adulterio=c("Álvaro Mesía","Álvaro","Mesía","Presidente del Casino", "marido", "placer", "pasión", "amante","amorío"),
-    espacio=c("casino","catedral","vivero","casa","espolón","teatro"),
-    tiempo=c("otoño","verano","invierno","primavera","semana santa","navidad")
+    familia=c("padre", "madre", "hijo", "hija", 
+              "hermano", "hermana"),
+    sociedad=c("vetustense","puebl","ciudad","conversa",
+               "amig","noble","arist"),
+    iglesia=c("cura","obispo","sacerdo","confesión",
+              "religi","canónig","capilla"),
+    economia=c("dinero","deuda","negoci","trabaj",
+               "fortuna","rico","rica"),
+    sentimientos=c("culpa","alegr","amor","remordimiento",
+                   "ridículo","vergüenza","triste"),
+    misticismo=c("Fermín de Pas","Fermín","\\bde Pas\\b",
+                 "magistral", "espirit","dios"),
+    adulterio=c("Álvaro Mesía","Álvaro","Mesía",
+                "Presidente del Casino", "marido", 
+                "placer", "pasión", "amante","amorío"),
+    espacio=c("casino","catedral","vivero","casa",
+              "espolón","teatro"),
+    tiempo=c("otoño","verano","invierno","primavera",
+             "semana santa","navidad")
   )
 )
     
 library(tenet)
     
-tagCorpus(cp, dic, reshape.to = "sentence")
+tagCorpus(cp, 
+          dic, 
+          reshape.to = "sentence", 
+          defaultPageSize = 3)
 
-    
-
+  
 ```
 
 ```{r, warning=F, message=F, error=F, fig.width=10, fig.height=8}
@@ -126,7 +321,11 @@ dicf <- dictionary(
 ))
 
 
-plotLexDiv(cp, dicf, title ="La Regenta", subtitle = "Familia y sociedad en la novela", palette = pal$cat.awtools.spalette.6[1:2])
+plotLexDiv(cp, 
+           dicf, 
+           title ="La Regenta", 
+           subtitle = "Familia y sociedad en la novela", 
+           palette = pal$cat.awtools.spalette.6[1:2])
 
 ```
 
@@ -137,28 +336,42 @@ Repetimos el mismo gráfico, ahora con las categorías de tiempo y espacio:
 
 dicf <- dictionary(
   list(
-    espacio=c("casino","catedral","vivero","casa","espolón","teatro"),
-    tiempo=c("otoño","verano","invierno","primavera","semana santa","navidad")
+    espacio=c("casino","catedral","vivero",
+              "casa","espolón","teatro"),
+    tiempo=c("otoño","verano","invierno",
+             "primavera","semana santa","navidad")
 ))
 
-plotLexDiv(cp, dicf, title ="La Regenta", subtitle = "Espacio y tiempo en la novela", palette = pal$cat.brewer.Dark2.8[c(1:4)])
+plotLexDiv(cp, 
+           dicf, 
+           title ='La Regenta', 
+           subtitle = "Espacio y tiempo en la novela", 
+           palette = pal$cat.brewer.Dark2.8[c(1:4)])
 
 
 dicf <- dictionary(
   list(
-    social=c("casino","teatro"),
+    social=c("casino","teatro","espolón",
+             "Paseo de Verano","Paseo de los curas",
+             "calle","plaza"),
     religioso=c("catedral","capilla","sacristía",
                 "claustro","seminario"),
-    hogar=c("vivero","casa","hogar","alcoba","habitación"),
-    paseos=c("espolón","Paseo de Verano","Paseo de los curas")
-))
+    doméstico=c("vivero","\\bcasa\\b","hogar","alcoba",
+                "habitación","cama")))
 
+ft <- filterWords(cp, dicf)
 
+ft$name[ft$name!="002 - Prólogo"] <- paste0("Capítulo ",ft$name[ft$name!="002 - Prólogo"])
 
-plotLexDiv(cp, dicf, title ="La Regenta", subtitle = "Tipos de espacio.", palette = pal$cat.brewer.Dark2.8[c(1:4)], hline.width = 2)
+plotSpike(ft, 
+          title = 'Los espacios de "La Regenta"', 
+          subtitle = "Gráfico de dispersión léxica para distintos tipos de espacio.", 
+          palette = pal$cat.brewer.Dark2.8[c(1:4)],
+          label.size = 3, 
+          line.width = 0.3, 
+          ring.col="black")
 
 ```
-
 
 
 
@@ -206,140 +419,68 @@ dich <- dictionary(
   list(
     hombres=
       list(
-           Alvaro=c("Álvaro Mesía",
-                    "Álvaro",
-                    "Mesía",
+           Alvaro=c("Álvaro Mesía","Álvaro","Mesía",
                     "presidente del casino"),
-           Saturnino=c("Saturnino Bermúdez",
-                       "Saturnino",
-                       "Bermúdez",
-                       "Saturno",
-                       "Saturnillo"),
-           Fermin=c("Magistral",
-                    "Provisor",
-                    "Fermín",
-                    "De Pas",
-                    "Fermín de Pas",
-                    "Magistral"),
-           Victor=c("Víctor",
-                    "Víctor Quintanar",
-                    "Quintanar"),
+           Saturnino=c("Saturnino Bermúdez","Saturnino",
+                       "Bermúdez","Saturno","Saturnillo"),
+           Fermin=c("Magistral","Provisor","Fermín",
+                    "De Pas","Fermín de Pas","Magistral"),
+           Victor=c("Víctor","Víctor Quintanar","Quintanar"),
            Otros=c(
-                   "Agustinito",
-                   "Amadeo",
-                   "Anacleto",
-                   "Anselmo",
-                   "Antero",
-                   "Antón Raíces",
-                   "Antonio",
-                   "Barcaza",
-                   "Basilio",
-                   "Bautista",
-                   "Bedoya",
-                   "Belisario",
-                   "Benítez",
-                   "Bismark",
-                   "Campillo","\\b[C]hato\\b",
-                   "don Carlos",
-                   "Peláez",
-                   "Cayetano","Cayetano Ripamilán","Ripamilán",
-                   "Celedonio",
-                   "Colás",
-                   "marqués de Corujedo",
-                   "Frígilis","Crespo",
-                   "Custodio",
+                   "Agustinito","Amadeo","Anacleto",
+                   "Anselmo","Antero","Antón Raíces",
+                   "Antonio","Barcaza","Basilio",
+                   "Bautista","Bedoya","Belisario",
+                    "Benítez","Bismark","Campillo",
+                   "\\b[C]hato\\b","don Carlos",
+                   "Peláez","Cayetano",
+                   "Cayetano Ripamilán","Ripamilán",
+                   "Celedonio","Colás","marqués de Corujedo",
+                   "Frígilis","Crespo","Custodio",
                    "Olías de Cuervo","señor Cuervo",
-                   "Diego",
-                   "Escosura",
-                   "\\b[E]studiante\\b","Pepe","Trabuco",
-                   "Foja",
-                   "Fortunato",
-                   "Francisco de Asís",
-                   "Francisco de Pas",
-                   "Francisco de Osuna",
-                   "Francisco Páez", "señor Páez", "señor de Páez",
-                   "Francisco Carraspique",
-                   "Froilán",
-                   "don Frutos","Frutos Redondo",
-                   "Fulgosio",
-                   "Germán",
-                   "Glocester","Restituto",
+                   "Diego","Escosura","\\b[E]studiante\\b",
+                   "Pepe","Trabuco","Foja","Fortunato",
+                   "Francisco de Asís","Francisco de Pas",
+                   "Francisco de Osuna","Francisco Páez", 
+                   "señor Páez", "señor de Páez",
+                   "Francisco Carraspique","Froilán",
+                   "don Frutos","Frutos Redondo","Fulgosio",
+                   "Germán","Glocester","Restituto",
                    "señor Infanzón", "el Infanzón",
-                   "Iriarte",
-                   "Joaquinito",
-                   "Juanito",
-                   "Leando",
-                   "Maroto",
-                   "marqués de Vegallana","\\s{1}[M]arqués\\b",
-                   "Martínez",
-                   "Matías",
-                   "Matiella",
-                   "monaguillo",
-                   "señor Orgaz",
-                   "\\b[P]alma\\b",
-                   "Paco","Paquito",
-                   "Palomo","Rodríguez",
-                   "Parcerisa",
-                   "Pedro",
-                   "\\b[P]erales\\b",
-                   "Pinón",
+                   "Iriarte","Joaquinito","Juanito",
+                   "Leando","Maroto","marqués de Vegallana",
+                   "\\s{1}[M]arqués\\b","Martínez",
+                   "Matías","Matiella","monaguillo",
+                   "señor Orgaz","\\b[P]alma\\b",
+                   "Paco","Paquito","Palomo",
+                   "Rodríguez","Parcerisa","Pedro",
+                   "\\b[P]erales\\b","Pinón",
                    "Pompeyo","Pompeyo Guimarán","Guimarán",
-                   "Robustiano",
-                   "señor Roque",
-                   "Rosendo",
-                   "don Santos",
-                   "Sousa",
-                   "Trifón",
-                   "\\b[V]inagre\\b",
+                   "Robustiano","señor Roque",
+                   "Rosendo","don Santos","Sousa",
+                   "Trifón","\\b[V]inagre\\b",
                    "Vinculete")
            ),
     mujeres=
       list(
-        Ana=c("Ana",
-              "Anita",
-              "Regenta"),
-        Obdulia=c("Obdulia",
-                  "Obdulia Fandiño",
-                  "Fandiño",
-                  "Obdulita"),
+        Ana=c("Ana","Anita","Regenta"),
+        Obdulia=c("Obdulia","Obdulia Fandiño",
+                  "Fandiño","Obdulita"),
         Otras=c(
-                "Agapita",
-                "Águeda",
-                "Angelina",
-                "Anuncita",
-                "doña Anuncia",
-                "Camila",
+                "Agapita","Águeda","Angelina",
+                "Anuncita","doña Anuncia","Camila",
                 "Carolina","Señora de Infanzón", "la Infanzón",
-                "Celestina",
-                "Edelmira",
-                "Emma",
-                "Fabiolita",
-                "Fulgencia",
-                "Gertrudis",
-                "la González",
-                "Juana",
-                "Lola",
-                "doña Lucía",
-                "marquesa","Rufina",
-                "Olvido",
-                "doña Paula",
-                "Pepa",
-                "Guimarán, Perpétua",
-                "\\b[P]ilar\\b",
-                "Petra",
-                "doña Petronila",
-                "Ramona",
-                "\\bRita\\b",
-                "\\bRosa\\b",
-                "Rosita",
-                "Rudesinda",
-                "Servanda",
-                "Társila",
-                "\\b[T]eresa\\b",
-                "Teresina",
-                "Úrsula",
-                "Visitación",
-                "\\b[V]isita\\b",
+                "Celestina","Edelmira","Emma",
+                "Fabiolita","Fulgencia","Gertrudis",
+                "la González","Juana","Lola",
+                "doña Lucía","marquesa","Rufina",
+                "Olvido","doña Paula","Pepa",
+                "Guimarán, Perpétua","\\b[P]ilar\\b",
+                "Petra","doña Petronila","Ramona",
+                "\\bRita\\b","\\bRosa\\b","Rosita",
+                "Rudesinda","Servanda","Társila",
+                "\\b[T]eresa\\b","Teresina",
+                "Úrsula","Visitación","\\b[V]isita\\b",
                 "viuda del marqués de Corujedo")
     )
   )
@@ -377,6 +518,19 @@ plotSankey(xx,
 
 
 ```
+
+```{r}
+
+plotStream(xx, 
+           x="groups",
+           y="frequency", 
+           group="level1",
+           palette=pal$cat.ggsci.simpsons.16)
+
+
+```
+
+
 
 dddd
 
@@ -435,3 +589,86 @@ plotChord(d1,
 ```
 
 aaa
+
+
+
+```{r, warning=F, message=F, error=F, fig.width=12, fig.height=36}
+
+
+nn <- data.frame()
+
+for(i in 1:30){
+  
+  c1 <- cp[i]
+  
+  c1 <- corpus_reshape(c1, to="paragraphs")
+  
+  d1 <- matchCodes(c1, 
+                   dic.per, 
+                   level = 2, 
+                   quietly=TRUE)
+  
+  d1$capitulo <- i
+  
+  d1 <- d1[order(d1$value, decreasing = T),]
+  
+  nn<- rbind(nn, d1)
+  
+}
+
+
+
+library(network)
+library(sna)
+library(ggnetwork)
+
+px <- list()
+
+for(i in 1:30){
+
+  n1 <- network(nn[nn$capitulo==i,], 
+                directed = F)
+  
+  gn <- ggnetwork(n1, 
+                  layout = "kamadakawai", 
+                  cell.jitter = 0.75)
+
+  p <- ggplot(gn, 
+              aes(x = x, 
+                  y = y, 
+                  xend = xend, 
+                  yend = yend)) +
+          geom_edges(
+                color = "grey90",
+                aes(size=value), 
+                curvature=0.25) +
+        geom_edges(
+                size=0.1, 
+                curvature=0.25, 
+                color="purple") +
+          geom_nodetext(
+                aes(label = vertex.names),
+                fontface = "bold")+
+          theme_blank()+
+          labs(title=paste0("**Capítulo ",i,"**"))+
+          theme(plot.title = 
+                  ggtext::element_markdown(
+                          size=15, 
+                          color="darkgreen"), 
+                legend.position = "none",
+                plot.margin=grid::unit(
+                  c(0.75,0.75,0.75,0.75), 
+                  "cm"))
+
+  px[[i]] <- p
+
+}
+
+library(egg)
+
+ggarrange(plots=px, 
+          ncol=3, 
+          nrow=10)
+
+
+```
