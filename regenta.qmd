@@ -97,7 +97,7 @@ diccionario
 dic <- dictionary(
   list(
     familia=c("padre", "madre", "hijo", "hija", "hermano", "hermana"),
-    sociedad=c("vetustense","señor","puebl","ciudad","conversa","amig"),
+    sociedad=c("vetustense","puebl","ciudad","conversa","amig"),
     iglesia=c("cura","obispo","sacerdo","confesión","religi","canónig","capilla"),
     economia=c("dinero","deuda","negoci","trabaj","fortuna","rico","rica"),
     sentimientos=c("culpa","alegr","amor","remordimiento","ridículo","vergüenza","triste"),
@@ -121,13 +121,47 @@ tagCorpus(cp, dic, reshape.to = "sentence")
 dicf <- dictionary(
   list(
     familia=c("padre", "madre", "hijo", "hija", "hermano", "hermana"),
-    sociedad=c("vetustense","señor","puebl","ciudad","conversa","amig")
+    sociedad=c("vetustense","puebl","ciudad","conversa",
+               "amig","noble","arist")
 ))
 
 
-plotLexDiv(cp, dicf, title ="La Regenta", subtitle = "Familia e iglesia en la novela", palette = pal$cat.awtools.spalette.6[1:2])
+plotLexDiv(cp, dicf, title ="La Regenta", subtitle = "Familia y sociedad en la novela", palette = pal$cat.awtools.spalette.6[1:2])
 
 ```
+
+
+Repetimos el mismo gráfico, ahora con las categorías de tiempo y espacio:
+
+```{r, warning=F, message=F, error=F, fig.width=10, fig.height=8}
+
+dicf <- dictionary(
+  list(
+    espacio=c("casino","catedral","vivero","casa","espolón","teatro"),
+    tiempo=c("otoño","verano","invierno","primavera","semana santa","navidad")
+))
+
+plotLexDiv(cp, dicf, title ="La Regenta", subtitle = "Espacio y tiempo en la novela", palette = pal$cat.brewer.Dark2.8[c(1:4)])
+
+
+dicf <- dictionary(
+  list(
+    social=c("casino","teatro"),
+    religioso=c("catedral","capilla","sacristía",
+                "claustro","seminario"),
+    hogar=c("vivero","casa","hogar","alcoba","habitación"),
+    paseos=c("espolón","Paseo de Verano","Paseo de los curas")
+))
+
+
+
+plotLexDiv(cp, dicf, title ="La Regenta", subtitle = "Tipos de espacio.", palette = pal$cat.brewer.Dark2.8[c(1:4)], hline.width = 2)
+
+```
+
+
+
+
 
 ```{r, warning=F, message=F, error=F}
 
@@ -160,6 +194,11 @@ plotVoronoiTree(data = xy,
 
 dd
 
+Juan Benito Argüelles - Nomina de personajes de "La Regenta"
+
+https://cvc.cervantes.es/literatura/cuadernos_del_norte/pdf/23/23_10.pdf
+
+
 ```{r, warning=F, message=F, error=F}
 
 
@@ -185,26 +224,74 @@ dich <- dictionary(
            Victor=c("Víctor",
                     "Víctor Quintanar",
                     "Quintanar"),
-           Otros=c("Custodio",
-                   "Frígilis",
+           Otros=c(
+                   "Agustinito",
+                   "Amadeo",
                    "Anacleto",
-                   "Carlos",
-                   "Orgaz",
+                   "Anselmo",
+                   "Antero",
+                   "Antón Raíces",
+                   "Antonio",
+                   "Barcaza",
+                   "Basilio",
+                   "Bautista",
+                   "Bedoya",
+                   "Belisario",
+                   "Benítez",
                    "Bismark",
+                   "Campillo","\\b[C]hato\\b",
+                   "don Carlos",
+                   "Peláez",
+                   "Cayetano","Cayetano Ripamilán","Ripamilán",
                    "Celedonio",
+                   "Colás",
+                   "marqués de Corujedo",
+                   "Frígilis","Crespo",
+                   "Custodio",
+                   "Olías de Cuervo","señor Cuervo",
+                   "Diego",
+                   "Escosura",
+                   "\\b[E]studiante\\b","Pepe","Trabuco",
+                   "Foja",
+                   "Fortunato",
+                   "Francisco de Asís",
+                   "Francisco de Pas",
+                   "Francisco de Osuna",
+                   "Francisco Páez", "señor Páez", "señor de Páez",
+                   "Francisco Carraspique",
+                   "Froilán",
+                   "don Frutos","Frutos Redondo",
+                   "Fulgosio",
+                   "Germán",
+                   "Glocester","Restituto",
+                   "señor Infanzón", "el Infanzón",
+                   "Iriarte",
+                   "Joaquinito",
+                   "Juanito",
+                   "Leando",
+                   "Maroto",
+                   "marqués de Vegallana","\\s{1}[M]arqués\\b",
+                   "Martínez",
+                   "Matías",
+                   "Matiella",
                    "monaguillo",
+                   "señor Orgaz",
+                   "\\b[P]alma\\b",
+                   "Paco","Paquito",
+                   "Palomo","Rodríguez",
+                   "Parcerisa",
                    "Pedro",
-                   "Palomo",
-                   "Cayetano",
-                   "Cayetano Ripamilán",
-                   "Ripamilán",
-                   "Cenceño",
-                   "Pompeyo",
-                   "Pompeyo Guimarán",
-                   "Guimarán",
-                   "Paco",
-                   "Paquito",
-                   "don Santos")
+                   "\\b[P]erales\\b",
+                   "Pinón",
+                   "Pompeyo","Pompeyo Guimarán","Guimarán",
+                   "Robustiano",
+                   "señor Roque",
+                   "Rosendo",
+                   "don Santos",
+                   "Sousa",
+                   "Trifón",
+                   "\\b[V]inagre\\b",
+                   "Vinculete")
            ),
     mujeres=
       list(
@@ -215,15 +302,45 @@ dich <- dictionary(
                   "Obdulia Fandiño",
                   "Fandiño",
                   "Obdulita"),
-        Otras=c("Visitación",
-                "Petra",
-                "Camila",
-                "doña Anuncia",
-                "Anuncita",
+        Otras=c(
+                "Agapita",
                 "Águeda",
+                "Angelina",
+                "Anuncita",
+                "doña Anuncia",
+                "Camila",
+                "Carolina","Señora de Infanzón", "la Infanzón",
+                "Celestina",
+                "Edelmira",
+                "Emma",
+                "Fabiolita",
+                "Fulgencia",
+                "Gertrudis",
+                "la González",
+                "Juana",
+                "Lola",
+                "doña Lucía",
+                "marquesa","Rufina",
+                "Olvido",
                 "doña Paula",
-                "marquesa",
-                "doña Petronila")
+                "Pepa",
+                "Guimarán, Perpétua",
+                "\\b[P]ilar\\b",
+                "Petra",
+                "doña Petronila",
+                "Ramona",
+                "\\bRita\\b",
+                "\\bRosa\\b",
+                "Rosita",
+                "Rudesinda",
+                "Servanda",
+                "Társila",
+                "\\b[T]eresa\\b",
+                "Teresina",
+                "Úrsula",
+                "Visitación",
+                "\\b[V]isita\\b",
+                "viuda del marqués de Corujedo")
     )
   )
 )

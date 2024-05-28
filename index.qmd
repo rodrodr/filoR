@@ -11,7 +11,6 @@ La preparación representa el paso previo para convertir los textos en datos. En
 
 En el siguiente tópico, aplicamos un conjunto de técnicas de análisis y visualización de datos a la novela "La Regenta" de Leopoldo Alas Clarín.
 
-[analisis.html](analisis.html)
 
 ## Tres sombreros de copa
 
