@@ -17,12 +17,18 @@ website:
       - href: sombreros.html
         text: Tres sombreros de copa
         
-        
+execute:
+  warning: false
+  message: false
+  error: false
+
 format:
   html:
     theme: pulse
     css: styles.css
     toc: true
+    code-fold: show
+  
 
 editor: source
 
