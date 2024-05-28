@@ -312,6 +312,14 @@ tagCorpus(cp,
   
 ```
 
+
+
+
+
+## Ubicación de las categorías temáticas en el texto
+
+
+
 ```{r, warning=F, message=F, error=F, fig.width=10, fig.height=8}
 
 dicf <- dictionary(
@@ -375,6 +383,7 @@ plotSpike(ft,
 ```
 
 
+## Peso de los temas
 
 
 ```{r, warning=F, message=F, error=F}
@@ -407,6 +416,10 @@ plotVoronoiTree(data = xy,
 ```
 
 dd
+
+
+## Distribución de  personajes por capítulo
+
 
 Juan Benito Argüelles - Nomina de personajes de "La Regenta"
 
@@ -533,7 +546,9 @@ plotStream(xx,
 
 
 
-dddd
+## Asociación entre temas y personajes
+
+
 
 ```{r, warning=F, message=F, error=F}
 
@@ -589,7 +604,6 @@ plotChord(d1,
 
 ```
 
-aaa
 
 
 
@@ -673,3 +687,15 @@ ggarrange(plots=px,
 
 
 ```
+
+
+## Análisis de conglomerados
+
+
+
+
+## Escalonado de textos: Wordfish
+
+
+
+
