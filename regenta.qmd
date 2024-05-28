@@ -11,6 +11,7 @@ load("../textos/Regenta.RData")
 library(quanteda)
 
 regc <- regc[3:nrow(regc),]
+
 # conviequanteda# convierte en un documento corpus
 cp <- corpus(regc, text_field = "texto")
 
