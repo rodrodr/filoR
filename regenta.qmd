@@ -641,8 +641,7 @@ forceDirectedTree(xy,
 
 Vemos círculos de distintos tamaños en el gráfico. Representan los grandes temas y su tamaño indica su peso en la novela. Cada uno posee un conjunto de otros círculos más pequeños de mismo color que indican la importancia de cada palabra clave dentro del tema. Así que el "Misticismo", por ejemplo, aparece como el tema más relevante y "Magistral", "Diós" y "Fermín" como sus palabras clave centrales. La economía, por otra parte, parece no importar mucho en Vetusta.
 
-
-lo mismo se puede ver así:
+Otra manera de visualizar los mismos datos es a través de un **treemap**. En este caso, los temas se representan como rectángulos de distintos tamaños y colores, donde el tamaño indica la importancia del tema y el color, su relación con otros temas. El gráfico abajo es una versión modificada que emplea el algoritmo de Voronoi para distribuir las áreas de forma precisa, pero con formas más libres, incluso no rectangulares. Se llama **Voronoi Tree**.
 
 ```{r, warning=F, message=F, error=F}
 
@@ -654,16 +653,13 @@ plotVoronoiTree(data = xy,
 
 <br>
 
-dd
-
+La diferencia central entre este último gráfico y el anterior se encuentra en el hecho de que la atención está centrada en la contribución de las palabras clave en la composición de cada tema. El la visualización anterior, el foco estaba en el peso relativo de los temas mucho más que en sus componentes empíricos concretos.
 
 ### Personajes en lugar de temas
 
-En primer lugar, creamos un diccionario con los personajes de la novela a partir de la lista de personajes de la novela elaborada por Argüeles [-@arguelles1984].
+¿Qué tal si analizamos los personajes en lugar de los temas? ¿Cómo se distribuyen en la novela? ¿Cuál es su importancia relativa? Para responder a estas preguntas, podemos emplear la misma lógica de análisis de temas, pero aplicada a los personajes. 
 
-Juan Benito Argüelles - Nomina de personajes de "La Regenta"
-
-https://cvc.cervantes.es/literatura/cuadernos_del_norte/pdf/23/23_10.pdf
+En primer lugar, creamos un diccionario con los personajes de la novela a partir de la nómina de personajes de la novela elaborada por Argüeles [-@arguelles1984].
 
 ```{r, warning=F, message=F, error=F}
 
@@ -739,9 +735,18 @@ dich <- dictionary(
   )
 )
 
+```
 
+<br>
 
+Como se puede observar, se tratan de muchos personajes, algunos de ellos con varios nombres o formas de denominación. Una vez que ya tenemos el diccionario en manos, podemos proceder a contar la frecuencia de aparición de los personajes en la novela. 
 
+Para añadir emoción al asunto, vamos a hacerlo por capítulo. De esa manera, seremos capaces de acompañar la evolución de los personajes a lo largo de la novela, su participación en cada etapa y su rol en la estructura. 
+
+```{r, warning=F, message=F, error=F}
+
+# cuenta la frecuencia de los personajes
+# en la novela por capítulo
 xp <- countKeywords(cp, 
                     dich, 
                     rel.freq = F, 
@@ -762,15 +767,37 @@ xx <- xx[xx$frequency>0,]
 # Ordena por capítulo
 xx <- xx[order(xx$groups),]
 
+# Muestra los resultados
+reactable(xx, resizable=TRUE)
+
+```
+
+<br>
+
+Podemos ver cómo Ana ni siempre es la que más aparece asociada a otros en la novela. En algunos capítulos Fermín o Álvaro toman la delantera, mientras que en otros pasajes el protagonismo es más coral, con varios personajes siendo mencionados simultáneamente.
+
+Como en el ejemplo anterior, también podemos emplear técnicas de visualización de datos para representar la información de manera más clara y atractiva. No obstante, ahora disponemos de una información adicional -el capítulo-, de modo que la información está más detallada y requiere otros enfoques para su representación gráfica.
+
+Una primera alternativa consiste en emplear un diagrama de Sankey, que nos permitirá visualizar la relación entre los personajes y los capítulos. Se trata de un diagrama de flujo en el que los nodos representan las entidades y las conexiones entre ellos las relaciones. En este caso, los nodos serán los personajes y los capítulos, y las conexiones las apariciones de los personajes en los capítulos. 
+
+La función `plotSankey` de `tenet` nos permite hacerlo de manera sencilla. solo tenemos que indicarle los datos, el nodo de origen ("from="), el nodo de destino ("to=") y el valor ("value=") que queremos representar. 
+
+```{r}
 plotSankey(xx, 
            from = "level1", 
            to="groups", 
            value = "frequency", 
            opacity = 0.05)
  
-
-
 ```
+
+<br>
+
+Los resultados son reveladores. Aunque Ana es el personaje que más aparece en la novela, su presencia no es constante a lo largo de los capítulos. En algunos de ellos, como el 8 o el 22, aparece de modo tímido. Esta tendencia resulta aún más acentuada en el caso de los demás personajes. 
+
+Aunque el diagrama de Sankey es una buena opción, posee una limitación clara: solo permite visualizar los datos de un personaje o un capítulo a la vez. Para superar dicha restricción, podemos emplear un diagrama de flujo (streamgraph) que nos permita visualizar la evolución de todos los personajes a lo largo de los capítulos.
+
+Lo haremos con la función `plotStream` de `tenet`. Al igual que en el caso anterior, solo tenemos que indicarle los datos, el nodo de origen ("x="), el nodo de destino ("y=") y el grupo ("group="). También podemos elegir la paleta de colores que queremos emplear ("palette=").
 
 ```{r}
 
@@ -782,6 +809,10 @@ plotStream(xx,
 
 
 ```
+
+<br>
+
+En este último gráfico queda más clara la evolución de los personajes en la novela y los momentos en los que el autor decide vincularles más o menos en su narrativa. Además, al pasar el cursor sobre un capítulo, podemos ver la frecuencia de aparición de todos y cada uno de los personajes en ese capítulo en concreto.
 
 ### Asociación entre temas y personajes
 
