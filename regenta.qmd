@@ -221,6 +221,8 @@ reactable(summary(cp))
 
 ```
 
+<br>
+
 Vemos que los treinta capítulos de la obra tienen una extensión que va de poco más de ocho mil hasta aproximadamente veintiún mil palabras. No resulta nada sorprendente que las palabras únicas y el número de frases varíen de forma proporcional.
 
 ### Frecuencias de palabras
@@ -240,6 +242,8 @@ tk <- tokens_remove(tk, stopwords("es"))
 
 ```
 
+<br>
+
 Para poder explorar cuáles palabras se destacan en la obra podemos emplear una técnica llamada *análisis de frecuencia de palabras*. En este caso, crearemos una matriz de términos de documentos (*document-feature matrix*), que es una representación matricial de los textos en la que las filas representan los documentos y las columnas las palabras. Cada celda de la matriz contiene el número de veces que una palabra aparece en un documento.
 
 El código abajo crea la matriz y convierte todos los términos en minúsculas para facilitar el cuenteo. Luego, muestra las cincuenta palabras más frecuentes en la obra.
@@ -254,6 +258,8 @@ dtm <- dfm(tk,
 topfeatures(dtm, 50)
 
 ```
+
+<br>
 
 En este caso, hemos considerado palabras aisladas, pero podemos repetir el análisis con bigramas o trigramas, que son secuencias de dos o tres palabras consecutivas. Estas combinaciones permiten encontrar secuencias de ideas que pueden revelar ciertos contenidos o patrones en el texto.
 
@@ -276,6 +282,8 @@ dtm <- dfm(tri)
 topfeatures(dtm, 50)
 
 ```
+
+<br>
 
 ¿Qué vemos en los resultados de los bigramas y trigramas? El primer patrón que emerge es la presencia de nombres de personajes, como "don Víctor Quintanar", "don Álvaro" o "do Fermín". También aparecen nombres de lugares, como "Vetusta" o "Santa Cruz". Por último, encontramos algunas secuencias que parecen describir acciones o situaciones, como "señor marqués" o "señor don Fermín".
 
@@ -300,6 +308,8 @@ col <- textstat_collocations(tk,
 reactable(col, resizable = TRUE, wrap=F)
 
 ```
+
+<br>
 
 Como hemos podido ver, vuelven a aparecer los nombres de los personajes, lugares, pero ahora también llaman la atención algunos términos que indican frecuencia (algunas veces, muchas veces, dos tres, cada día) o hacen referencia al tiempo (aquel momento, aquella tarde, media hora). Estos términos pueden ser útiles para entender el contexto en el que se desarrolla la obra.
 
@@ -333,6 +343,8 @@ reactable(kw_amor,
 
 ```
 
+<br>
+
 Saltan a la vista los calificativos y acciones que se revelan cuando se analiza el contexto de "adulterio". Se ven atributos como "repugnante", "infame", "ominoso", "escándalo". También acciones que se asocian como respuesta al adulterio: "vengar", "duelo", "batirme". En pocas palabras, se nota el rechazo social al adulterio y se puede fácilmente imaginar un desaforado cornudo, pistola en mano, buscando venganza.  
 
 Podemos emplear un tipo de visualización de datos llamado **árbol de palabras** para representar gráficamente el contexto en el que aparece la palabra "adulterio". En este caso, vamos a emplear la función `wordtree` del paquete **tenet** para crear un árbol de palabras que muestre las palabras que aparecen antes y después de "adulterio" en el texto. No obstante, como hemos visto, la palabra "adulterio" no aparece muchas veces en la novela, por lo que el árbol de palabras no será muy complejo ni tampoco interesante. Probemos algo más picante, que salga el "amor".
@@ -355,6 +367,8 @@ ur <- wordtree(cp, "amor", url.return = T)
 htmltools::includeHTML(ur)
 
 ```
+
+<br>
 
 Ahora las cosas se ponen más interesantes. Vemos que las palabras cambian de tamaño según su frecuencia, de modo que sabemos que "amor de" resulta más común que "amor del", por ejemplo.  
 
@@ -398,6 +412,8 @@ textplot_keyness(key)
 
 ```
 
+<br>
+
 Las palabras asociadas a la comida se destacan: cocina, despensa, cocinero, fogón, pinche, merienda, almíbares. También se destacan palabras asociadas a la nobleza: marques, marquesa, regencia, así como el lugar de las tertulias (el salón amarillo). De otro lado, vemos las palabras que está fuera: Magistral, Fermín, Víctor, Ana, Quintanar, que son personajes que no aparecen en el capítulo 8 o apenas lo hacen.
 
 Podemos añadir información empleando la función `plotKeyness` del paquete **tenet** para visualizar los resultados de una manera interactiva y bidimensional. Nos interesa saber, además del `chi2`, la frecuencia de las palabras. No es lo mismo una palabra rara que aparece poco que otra que no resulta tan común en la obra, pero que se emplea mucho en el capítulo en cuestión.
@@ -415,6 +431,8 @@ plotKeyness(cp,
 
 ```
 
+<br>
+
 De ese modo, las palabras que se encuentren lo más lejos del eje horizontal y vertical serán las más específicas del capítulo. Por otra parte, aquellas que se encuentren más a la derecha, so. las más frecuentes en el capítulo 8. Por lo tanto, términos como "visita", "cocina", "marqués" se destacan tanto por su particular incidencia en el capítulo, como por su alta frecuencia. También vemos en rojo las palabras empleadas menos que lo esperado. 
 
 Si queremos analizar cuáles son las expresiones de peso en los demás capítulos, basta cambiar el argumento `ref.cat` por el número del capítulo que nos interese. Estos pasos exploratorios nos permiten tener una idea de los temas y personajes que aparecen en cada capítulo y, por consiguiente, de las palabras clave que los caracterizan.
@@ -422,10 +440,29 @@ Si queremos analizar cuáles son las expresiones de peso en los demás capítulo
 
 ## Codificación temática
 
+Entendemos por codificación temática el proceso de análisis de un texto con el propósito de identificar ideas, conceptos y temas recurrentes. Se utiliza de forma amplia en las ciencias sociales, como la sociología o la antropología, para analizar entrevistas, encuestas o documentos. En este caso, vamos a emplear la codificación temática para identificar los temas y conceptos que aparecen en la novela.
+
+Como temas, por ejemplo, podemos tener el tiempo (las estaciones del año, el paso del tiempo, el momento del día, las fiestas religiosas), el espacio (el hogar, los ambientes de interacción social, la iglesia), la familia (los padres, los hijos, los hermanos), la sociedad (los nobles, los plebeyos, los campesinos), entre otros. 
+
+La forma más tradicional de codificación temática consiste en imprimir los documentos, leerlos detenidamente y realizar marcas o anotaciones en los márgenes. Sin embargo, en la era digital, podemos emplear herramientas de análisis de texto que nos ayudan a llevar a cabo esta tarea de forma más rápida y eficiente. Los diccionarios (o léxicos) son una de las más comunes.
+
 ### El uso de diccionarios
+
+Un diccionario corresponde a un conjunto de palabras clave asociados a un tema. Por ejemplo, cuando pienso en la familia, me vienen a la mente palabras como "padre", "madre", "hijo", "hermano", "hermana","tío", "tía", "abuelo", "abuela". Algunos más radicales incluirían los cuñados y parientes más lejanos. Si lo expresara de forma algorítmica sería algo así:
+
+familia = c("padre", "madre", "hijo", "hermano", "hermana", "tío", "tía", "abuelo", "abuela")
+
+Al buscar esas palabras en uno o varios textos, sabré que se menciona de alguna manera la familia y, principalmente, dónde y cuántas veces.
+
+Abajo hemos creado un diccionario con palabras clave asociadas a diferentes temas. En este caso, hemos considerado la familia, la sociedad, la iglesia, la economía, los sentimientos, el misticismo, el adulterio, el espacio y el tiempo.
+
+Luego, utilizo la función `tagCorpus` del paquete **tenet** para etiquetar de forma automática los textos con las palabras clave del diccionario frase a frase. Este procedimiento también me dice cuál es la categoría o tema más importante encontrado en la frase, cuáles son todos los temas encontrados, la cantidad de categorías y el número de palabras clave coincidentes. También permite filtrar y reordenar los resultados.
 
 ```{r, warning=F, message=F, error=F}
 
+# Crea un diccionario con palabras clave
+# sobre algunos temas de interés en la
+# novela
 dic <- dictionary(
   list(
     familia=c("padre", "madre", "hijo", "hija", 
@@ -433,25 +470,29 @@ dic <- dictionary(
     sociedad=c("vetustense","puebl","ciudad","conversa",
                "amig","noble","arist"),
     iglesia=c("cura","obispo","sacerdo","confesión",
-              "religi","canónig","capilla"),
+              "religión","religios","canónig","capilla"),
     economia=c("dinero","deuda","negoci","trabaj",
-               "fortuna","rico","rica"),
-    sentimientos=c("culpa","alegr","amor","remordimiento",
+               "fortuna","\\brico","\\brica"),
+    sentimientos=c("culpa","alegr","\\bamor\\b","remordimiento",
                    "ridículo","vergüenza","triste"),
     misticismo=c("Fermín de Pas","Fermín","\\bde Pas\\b",
                  "magistral", "espirit","dios"),
-    adulterio=c("Álvaro Mesía","Álvaro","Mesía",
-                "Presidente del Casino", "marido", 
+    adulterio=c("Álvaro","Mesía","adulte","amante",
+                "Presidente del", "marido", 
                 "placer", "pasión", "amante","amorío"),
-    espacio=c("casino","catedral","vivero","casa",
+    espacio=c("casino","catedral","vivero","\\bcasa\\b",
               "espolón","teatro"),
     tiempo=c("otoño","verano","invierno","primavera",
-             "semana santa","navidad")
+             "semana santa","navidad","\\bdía\\b","noche",
+             "tarde","la mañana","madrugada")
   )
 )
     
+# Carga el paquete tenet
 library(tenet)
-    
+
+# Genera el etiquetado de 
+# las frases según el diccionario
 tagCorpus(cp, 
           dic, 
           reshape.to = "sentence", 
@@ -460,45 +501,56 @@ tagCorpus(cp,
   
 ```
 
+<br>
+
+El resultado son frases palabras pintadas de distintos colores de acuerdo con los temas a que pertenecen, como si hubiesen sido resaltadas con un marcador. De ese modo, se pude realizar una lectura rápida y visual de la incidencia de los temas en el texto, manteniendo todo el contexto de la obra.
+
 ### Ubicación de temas en el texto
 
-```{r, warning=F, message=F, error=F, fig.width=10, fig.height=8}
+La tabla anterior resulta muy útil si queremos examinar las palabras en su contexto y regresar al documento para entender mejor cómo se utilizan. Sin embargo, si queremos tener una visión general de la distribución de los temas en el texto, podemos utilizar un gráfico de dispersión léxica. Se trata de una técnica de visualización de datos que representa un texto como un intervalor cortado por puntos o líneas verticales que corresponden a las palabras clave encontradas. 
 
-dicf <- dictionary(
-  list(
-    familia=c("padre", "madre", "hijo", "hija", "hermano", "hermana"),
-    sociedad=c("vetustense","puebl","ciudad","conversa",
-               "amig","noble","arist")
-))
+La función `plotLexDiv` del paquete **tenet** permite generar un gráfico de dispersión léxica que muestra la distribución de las palabras clave en el texto coloreadas por tema del diccionario. No se recomienda utilizar muchas categorías en un solo gráfico, puesto que la visualización se vuelve confusa y resulta muy difícil identificar patrones.
 
-
-plotLexDiv(cp, 
-           dicf, 
-           title ="La Regenta", 
-           subtitle = "Familia y sociedad en la novela", 
-           palette = pal$cat.awtools.spalette.6[1:2])
-
-```
-
-Repetimos el mismo gráfico, ahora con las categorías de tiempo y espacio:
+El siguiente código genera un gráfico de dispersión léxica, utilizando un diccionario con palabras clave asociadas a los temas de espacio y tiempo.
 
 ```{r, warning=F, message=F, error=F, fig.width=10, fig.height=8}
 
+# Crea un diccionario solo
+# con dos temas: espacio y tiempo
 dicf <- dictionary(
   list(
     espacio=c("casino","catedral","vivero",
-              "casa","espolón","teatro"),
-    tiempo=c("otoño","verano","invierno",
-             "primavera","semana santa","navidad")
+              "casa","espolón","teatro",
+              "calle","plaza","Paseo de Verano",
+              "salón","tertulia"),
+    tiempo=c("otoño","verano","invierno","primavera",
+             "semana santa","navidad","\\bdía\\b","noche",
+             "tarde","la mañana","madrugada")
 ))
 
+# Crea el gráfico de dispersión
+# léxica
 plotLexDiv(cp, 
            dicf, 
            title ='La Regenta', 
            subtitle = "Espacio y tiempo en la novela", 
            palette = pal$cat.brewer.Dark2.8[c(1:4)])
+```
 
+<br>
 
+Como podemos observar, las palabras clave relacionadas al espacio y tiempo se intercalan sin presentar un patrón claro. Por ello, sería útil realizar un análisis más detallado de los espacios (y de los tiempos) mencionados en la novela. Para ello, podemos utilizar la función `filterWords` del paquete **tenet** para seleccionar solo las palabras clave relacionadas al espacio y generar un gráfico de dispersión léxica interactivo que muestre la distribución de estos términos en el texto empleando la función `plotSpike`.
+
+Creamos un nuevo diccionario con tres categorías analíticas del espacio: social, religioso y doméstico. El primer tipo reúne aquellos lugares de encuentro y diversión, como casinos, teatros y salones donde se da la interacción de los personajes nobles y de alta sociedad. 
+
+El segundo se encuentra representado por los lugares de culto, como catedrales y capillas. Son parte de los dominios de Fermín de Pas y su importancia en la trama viene de la fe que confesa Ana y su relación con el misticismo.
+
+El tercero congrega el ambiente doméstico de carácter íntimo. Son lugares de vida cotidiana, como la casa, las habitaciones, la alcoba y las cocinas. Muchas de las escenas de la novela transcurren en estos espacios, donde se reflejan las angustias de Ana, como la expresión y transgresión de la intimidad del hogar.
+
+```{r}
+
+# Crea un diccionario solo sobre espacio,
+# con subcategorías más detalladas
 dicf <- dictionary(
   list(
     social=c("casino","teatro","espolón",
@@ -509,10 +561,17 @@ dicf <- dictionary(
     doméstico=c("vivero","\\bcasa\\b","hogar","alcoba",
                 "habitación","cama","cocina","despensa")))
 
+# Filtra las palabras clave empleando
+# el nuevo diccionario
 ft <- filterWords(cp, dicf)
 
-ft$name[ft$name!="002 - Prólogo"] <- paste0("Capítulo ",ft$name[ft$name!="002 - Prólogo"])
+# Añade la palabra capítulo al número
+# de los capítulos para facilitar la
+# lectura de los datos
+ft$name <- paste0("Capítulo ",ft$name)
 
+# Genera el gráfico de dispersión léxica
+# circular interactivo
 plotSpike(ft, 
           title = 'Los espacios de "La Regenta"', 
           subtitle = "Gráfico de dispersión léxica para distintos tipos de espacio.", 
@@ -523,10 +582,27 @@ plotSpike(ft,
 
 ```
 
+<br>
+
+Ahora, los patrones quedan mucho más evidentes. Los espacios religiosos se destacan en los dos primeros capítulos de forma clara, así como en el capítulo 23. Además, es ahí donde termina la novela. Los ambientes domésticos, predominantes en los pasajes dedicados a la interacción con Ana, que se alternan con los espacios "sociales" en los que se desenvuelve la vida de la ciudad y de los demás personajes.
+
+
 ### Peso de los temas
+
+¿Cuál la importancia de cada tema en la obra? Para responder a esta pregunta, podemos calcular la prevalencia de los temas en el texto. El peso de un tema se calcula de dos maneras: 
+
+(a) por **la frecuencia absoluta** - que consiste en solamente contar el número de palabras clave asociadas a ese tema en el texto; o
+
+(b) por **la frecuencia relativa** - obtenida dividiendo el número de palabras clave asociadas a ese tema por el número total de palabras en el texto. En ese sentido, representa una medida de densidad del tema.
+
+Mientras que la frecuencia absoluta nos da una idea de la cantidad de veces que un tema es mencionado, la frecuencia relativa nos permite comparar la importancia de los temas en textos de diferente longitud.
+
 
 ```{r, warning=F, message=F, error=F}
 
+# La función countKeywords
+# cuenta las palabras clave de un
+# diccionario en un texto
 xy <- countKeywords(cp, 
                     dic, 
                     rel.freq = F, 
@@ -535,26 +611,51 @@ xy <- countKeywords(cp,
 # Elimina los términos no encontrados
 xy <- xy[xy$frequency>0,]
 
+# Elimina la variable de grupos
+# (no hay grupos en este caso)
 xy$groups <- NULL
 
-forceDirectedTree(xy,value_col = "frequency",
-                  palette = pal$cat.awtools.bpalette.16, 
-                  max.radius = 50, 
-                  height = 500)
+# Muestra los resultados
+reactable(xy, resizable = TRUE)
 
 ```
+
+<br>
+
+Si ordenamos los valores de la frecuencia del mayor al menor, vemos que el misticismo y el adulterio aparecen entre los más frecuentes. El primero, por la presencia de Fermín de Pas y su relación con Ana, y el segundo, por la trama principal de la novela. El espacio de la casa también es relevante.
+
+Sin embargo, la tabla no contiene información agregada por tema. Podríamos utilizar una función en R para agregar los resultados o emplear diferentes técnicas de visualización para comparar los temas. En este caso, utilizaremos un gráfico de redes jerárquicas para visualizar la relación entre los temas y su frecuencia en el texto. 
+
+```{r}
+
+# Crea una red de temas con
+# los resultados obtenidos
+forceDirectedTree(xy,
+                  value_col = "frequency",
+                  max.radius = 60,
+                  height=500)
+
+```
+
+<br>
+
+Vemos círculos de distintos tamaños en el gráfico. Representan los grandes temas y su tamaño indica su peso en la novela. Cada uno posee un conjunto de otros círculos más pequeños de mismo color que indican la importancia de cada palabra clave dentro del tema. Así que el "Misticismo", por ejemplo, aparece como el tema más relevante y "Magistral", "Diós" y "Fermín" como sus palabras clave centrales. La economía, por otra parte, parece no importar mucho en Vetusta.
+
 
 lo mismo se puede ver así:
 
 ```{r, warning=F, message=F, error=F}
 
-
+# Gráfico de Voronoi
 plotVoronoiTree(data = xy,
                 value_col = "frequency")
 
 ```
 
+<br>
+
 dd
+
 
 ### Personajes en lugar de temas
 
@@ -896,50 +997,60 @@ plotChord(d1,
 
 ```
 
+<br>
+
+El siguiente código genera una visualización de red para cada capítulo que muestra la frecuencia en que los personajes aparecen juntos en los mismos párrafos. Hemos elegido eliminar a Ana por dos motivos. Primero, para facilitar la visualización, puesto que se trata del personaje principal y que aparece relacionada a casi todos los demás. Segundo, y más importante, su ausencia nos permite observar las relaciones entre los demás personajes, que de otro modo quedarían opacadas por la presencia de Ana. Por ejemplo, de ese modo podemos ver mejor cuándo Fermín y Álvaro toman el centro de la narración o cuando otros personajes interesantes, como la marquesa, se destacan.
+ 
+
+
 ```{r, warning=F, message=F, error=F, fig.width=12, fig.height=36}
 
+# Carga los paquetes necesarios
+library(network)
+library(sna)
+library(ggnetwork)
+library(ggplot2)
 
-nn <- data.frame()
+# Crea una lista para guardar
+# los gráficos de red
+# de cada capítulo
+px <- list()
 
+# Para cada capítulo
 for(i in 1:30){
-  
+
+  # Extrae el texto del capítulo
   c1 <- cp[i]
   
+  # Reorganiza en párrafos
   c1 <- corpus_reshape(c1, to="paragraphs")
   
+  # Calcula la frecuencia de los
+  # personajes
   d1 <- matchCodes(c1, 
                    dic.per, 
                    level = 2, 
                    quietly=TRUE)
   
+  # Elimina a Ana para facilitar
+  # la visualización
   d1 <- d1[d1$term1!="Ana",]
   d1 <- d1[d1$term2!="Ana",]
 
-  d1$capitulo <- i
-  
+  # Ordena los resultados
   d1 <- d1[order(d1$value, decreasing = T),]
-  
-  nn<- rbind(nn, d1)
-  
-}
 
-
-
-library(network)
-library(sna)
-library(ggnetwork)
-
-px <- list()
-
-for(i in 1:30){
-
-  n1 <- network(nn[nn$capitulo==i,], 
+  # Crea una red
+  n1 <- network(d1, 
                 directed = F)
   
+  # Convierte en un layout
+  # de red para la visualización
   gn <- ggnetwork(n1, 
                   layout = "kamadakawai", 
                   cell.jitter = 0.75)
 
+  # Genera el gráfico
   p <- ggplot(gn, 
               aes(x = x, 
                   y = y, 
@@ -967,18 +1078,28 @@ for(i in 1:30){
                   c(0.75,0.75,0.75,0.75), 
                   "cm"))
 
+  # Almacena el gráfico en
+  # la lista
   px[[i]] <- p
 
 }
 
+# Carga el paquete que
+# permitirá visualizar
+# las 30 redes en un
+# solo gráfico
 library(egg)
 
+# Organiza los gráficos
+# en tres columnas y diez
+# filas
 ggarrange(plots=px, 
           ncol=3, 
           nrow=10)
 
-
 ```
+
+
 
 
 ## *Clusters*, Análisis de correspondencia y escalonado de textos
