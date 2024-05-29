@@ -1,5 +1,6 @@
 ---
 title: "<b>La Regenta</b><br>Análisis de la novela en R"
+bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -180,14 +181,13 @@ dic.per <- dictionary(
 
 ## Introducción
 
-En este apartado, se analiza la obra "La Regenta" de Leopoldo Alas Clarín a partir de diferentes técnicas de análisis de contenido. Se tratan, en su mayor parte, de acercamientos estadísticos o cuantitativos a los textos literarios. Por lo tanto, representan una visión limitada de la obra y solo complementaria a la lectura y el análisis cualitativo detenido de la misma.  
+En este apartado, se analiza la obra "La Regenta" de Leopoldo Alas Clarín a partir de diferentes técnicas de análisis de contenido. Se tratan, en su mayor parte, de acercamientos estadísticos o cuantitativos a los textos literarios. Por lo tanto, representan una visión limitada de la obra y solo complementaria a la lectura y el análisis cualitativo detenido de la misma.
 
 Nos acercaremos al texto, primero, intentando descubrir cuáles palabras se destacan, sus frecuencias y distribuciones. Luego, analizaremos la obra desde la perspectiva de los personajes, sus relaciones y sus apariciones en la obra.
 
-
 ## Las palabras que cuentan
 
-El primer paso del análisis consiste en cargar los datos que hemos preparado en la sección de [preparación de los datos](prepa.html) y convertirlo en un objeto de tipo *corpus*. Para ello, emplearemos el paquete de R llamado **quanteda**, que resulta bastante completo para el análisis de contenido. 
+El primer paso del análisis consiste en cargar los datos que hemos preparado en la sección de [preparación de los datos](prepa.html) y convertirlo en un objeto de tipo *corpus*. Para ello, emplearemos el paquete de R llamado **quanteda**, que resulta bastante completo para el análisis de contenido.
 
 El código abajo carga los datos en la memoria, los convierte en un corpus y muestra algunas estadísticas básicas de los capítulos de la obra, como el número de palabras (*tokens*), el número de palabras únicas (*types*) y la cantidad de frases.
 
@@ -199,6 +199,11 @@ load("../textos/Regenta.RData")
 # carga el paquete quanteda para 
 # algunos análisis
 library(quanteda)
+
+# carga el paquete reactable que
+# permitirá mostrar los resultados en
+# una tabla interactiva
+library(reactable)
 
 # Elimina el título y el prólogo
 regc <- regc[3:nrow(regc),]
@@ -212,24 +217,38 @@ docnames(cp) <- regc$capitulo
 
 # muestra estadísticas básicas de
 # cada capítulo
-reactable::reactable(summary(cp))
+reactable(summary(cp))
 
 ```
 
-Vemos que los treinta capítulos de la obra tienen una extensión que va de poco más de ocho mil hasta aproximadamente veintiún mil palabras. No resulta nada sorprendente que las palabras únicas y el número de frases varían de forma proporcional.
+Vemos que los treinta capítulos de la obra tienen una extensión que va de poco más de ocho mil hasta aproximadamente veintiún mil palabras. No resulta nada sorprendente que las palabras únicas y el número de frases varíen de forma proporcional.
 
-Más interesante resulta explorar cuáles palabras se destacan en la obra. Para ello, emplearemos una técnica llamada *análisis de frecuencia de palabras*. En este caso, emplearemos una matriz de términos de documentos (*document-feature matrix*), que es una representación matricial de los textos en la que las filas representan los documentos y las columnas las palabras. Cada celda de la matriz contiene el número de veces que una palabra aparece en un documento.
+### Frecuencias de palabras
 
+El próximo paso consiste en convertir el corpus en una matriz de términos. Para ello, primero convertimos los textos en *tokens*, que son las palabras individuales de los textos. Luego, eliminamos las palabras vacías (*stopwords*) y las palabras que no aportan información, como los números y los signos de puntuación. Este objeto será luego empleado en diversas técnicas de análisis de contenido.
+
+```{r}
+
+# convierte en tokens y remueve
+# punctuación, símbolos y números
+tk <- tokens(cp, remove_punct = TRUE, 
+                  remove_numbers = TRUE, 
+                  remove_symbols = TRUE)
+
+# Elimina las palabras vacías
+tk <- tokens_remove(tk, stopwords("es"))
+
+```
+
+Para poder explorar cuáles palabras se destacan en la obra podemos emplear una técnica llamada *análisis de frecuencia de palabras*. En este caso, crearemos una matriz de términos de documentos (*document-feature matrix*), que es una representación matricial de los textos en la que las filas representan los documentos y las columnas las palabras. Cada celda de la matriz contiene el número de veces que una palabra aparece en un documento.
+
+El código abajo crea la matriz y convierte todos los términos en minúsculas para facilitar el cuenteo. Luego, muestra las cincuenta palabras más frecuentes en la obra.
 
 ```{r}
 
 # convierte en una matriz de términos
-dtm <- dfm( tokens(cp, remove_punct = TRUE, 
-                  remove_numbers = TRUE, 
-                  remove_symbols = TRUE), 
+dtm <- dfm(tk, 
            tolower = TRUE)
-
-dtm <- dfm_remove(dtm, c(stopwords("es"),"si"))
 
 # muestra las 50 palabras más frecuentes
 topfeatures(dtm, 50)
@@ -239,12 +258,6 @@ topfeatures(dtm, 50)
 En este caso, hemos considerado palabras aisladas, pero podemos repetir el análisis con bigramas o trigramas, que son secuencias de dos o tres palabras consecutivas. Estas combinaciones permiten encontrar secuencias de ideas que pueden revelar ciertos contenidos o patrones en el texto.
 
 ```{r}
-
-tk <- tokens(cp, remove_punct = TRUE, 
-                  remove_numbers = TRUE, 
-                  remove_symbols = TRUE)
-
-tk <- tokens_remove(tk, stopwords("es"))
 
 bi <- tokens_ngrams(tk, n = 2)
 
@@ -266,15 +279,150 @@ topfeatures(dtm, 50)
 
 ¿Qué vemos en los resultados de los bigramas y trigramas? El primer patrón que emerge es la presencia de nombres de personajes, como "don Víctor Quintanar", "don Álvaro" o "do Fermín". También aparecen nombres de lugares, como "Vetusta" o "Santa Cruz". Por último, encontramos algunas secuencias que parecen describir acciones o situaciones, como "señor marqués" o "señor don Fermín".
 
+### Colocaciones
+
+Otro recurso útil a la hora de explorar los términos más frecuentes en un texto proviene de las colocaciones. Las colocaciones son secuencias de palabras que aparecen juntas con más frecuencia de lo que se esperaría por azar. En otras palabras, son secuencias de palabras que tienen un significado especial o que se emplean en un contexto específico.
+
+El código abajo emplea la función `textstat_collocations` del paquete **quanteda.textstats** para encontrar las colocaciones más frecuentes en el texto[^1]. En este caso, hemos considerado solo las colocaciones que aparecen al menos diez veces en el texto.
+
+[^1]: No nos detendremos aquí en explicar los detalles del cálculo de los indicadores. Cada técnica suele estar asociada a un artículo o referencia de ayuda que aclara el algoritmo. Para saber más sobre la función `textstat_collocations`, puedes consultar la ayuda en R ejecutando el comando *help(textstat_collocations)* de la consola de R.
+
+```{r}
+
+# Carga el paquete
+library(quanteda.textstats)
+
+# Encuentra las colocaciones
+col <- textstat_collocations(tk, 
+                             min_count = 10)
+
+# Muestra los resultados
+reactable(col, resizable = TRUE, wrap=F)
+
+```
+
+Como hemos podido ver, vuelven a aparecer los nombres de los personajes, lugares, pero ahora también llaman la atención algunos términos que indican frecuencia (algunas veces, muchas veces, dos tres, cada día) o hacen referencia al tiempo (aquel momento, aquella tarde, media hora). Estos términos pueden ser útiles para entender el contexto en el que se desarrolla la obra.
+
+### Palabras-clave
+
+Otro recurso que disponemos para examinar el contenido de un texto es el análisis de palabras-clave. Podemos interesarnos por un tema o concepto específico y buscar en qué contexto aparece en el texto. En este caso, vamos a buscar la palabra "adulterio" y ver en qué contexto aparece en la obra.
+
+Una estrategia sería ver cuántas veces aparece "adulterio" en la novela, pero eso no nos daría mucha información sobre el contexto en el que se emplea. Por eso, vamos a emplear la función `kwic` (*keyword in context*) del paquete **quanteda** para buscar la palabra en el texto y ver en qué contexto aparece.
+
+El resultado es una tabla que muestra la palabra "adulterio" y las palabras que la rodean en el texto. De esta manera, podemos entender mejor cómo se emplea la palabra en la obra y qué significado tiene en el contexto de la novela.
+
+```{r}
+
+# Carga el paquete
+library(quanteda)
+
+# recreamos los tokens
+# sin remover la puntuación
+# o los stopwords
+tk <- tokens(cp)
+
+# Busca la palabra "adulterio" en
+# su contexto
+kw_amor <- kwic(tk, 
+                pattern =  "adulterio")
+
+# Muestra los resultados
+reactable(kw_amor, 
+          resizable = TRUE, 
+          wrap=F)
+
+```
+
+Saltan a la vista los calificativos y acciones que se revelan cuando se analiza el contexto de "adulterio". Se ven atributos como "repugnante", "infame", "ominoso", "escándalo". También acciones que se asocian como respuesta al adulterio: "vengar", "duelo", "batirme". En pocas palabras, se nota el rechazo social al adulterio y se puede fácilmente imaginar un desaforado cornudo, pistola en mano, buscando venganza.  
+
+Podemos emplear un tipo de visualización de datos llamado **árbol de palabras** para representar gráficamente el contexto en el que aparece la palabra "adulterio". En este caso, vamos a emplear la función `wordtree` del paquete **tenet** para crear un árbol de palabras que muestre las palabras que aparecen antes y después de "adulterio" en el texto. No obstante, como hemos visto, la palabra "adulterio" no aparece muchas veces en la novela, por lo que el árbol de palabras no será muy complejo ni tampoco interesante. Probemos algo más picantes, que salga el "amor".
+
+```{r, eval=F}
+
+library(tenet)
+
+
+wordtree(cp, "amor")
+
+```
+
+```{r, eval=T, echo=F}
+
+library(tenet)
+
+ur <- wordtree(cp, "amor", url.return = T)
+
+htmltools::includeHTML(ur)
+
+```
+
+Ahora las cosas se ponen más interesantes. Vemos que las palabras cambian de tamaño según su frecuencia, de modo que sabemos que "amor de" resulta más común que "amor del", por ejemplo.  
+
+Pero, ¿qué palabras debo elegir? ¿Cómo sé cuáles son las más relevantes? Para responder a estas preguntas, podemos emplear una técnica llamada **keyness**. Esta técnica compara la frecuencia de una palabra en un texto con su frecuencia en otro texto de referencia. Si la palabra aparece poco en el texto de referencia, entonces debería aparecer poco en el texto elegido. Si no es así, tenemos una palabra clave, entendida como un término cuya frecuencia resulta muy superior a la esperada.
+
+El capítulo 8 de la novela es una delicia para emplear esa técnica. Se trata de un pasaje que contiene la descripción de una merienda en la casa de la marquesa de Vegallana y sus "preparativos" en la cocina. Emplearemos la función `textstat_keyness` del paquete **quanteda.textstats** para encontrar las palabras clave.
+
+
+```{r}
+
+# Cargamos los paquetes necesarios
+library(quanteda.textstats)
+library(quanteda.textplots)
+
+# Volvemos a crear los tokens
+# sin puntos ni stopwords
+
+# convierte en tokens y remueve
+# punctuación, símbolos y números
+tk <- tokens(cp, remove_punct = TRUE, 
+                  remove_numbers = TRUE, 
+                  remove_symbols = TRUE)
+
+# Elimina las palabras vacías
+tk <- tokens_remove(tk, stopwords("es"))
+
+# Creamos la matriz de frecuencia
+# de términos
+dtm <- dfm(tk)
+
+# Calculamos la estadística, 
+# considerando el capítulo 8 como
+# objetivo y el resto de la novela
+# como referencia
+key <- textstat_keyness(dtm, 
+                        target = "08")
+
+# Visualizamos los resultados
+textplot_keyness(key)
+
+
+```
+
+Las palabras asociadas a la comida se destacan: cocina, despensa, cocinero, fogón, pinche, merienda, almíbares. También se destacan palabras asociadas a la nobleza: marques, marquesa, regencia, así como el lugar de las tertulias (el salón amarillo). De otro lado, vemos las palabras que está fuera: Magistral, Fermín, Víctor, Ana, Quintanar, que son personajes que no aparecen en el capítulo 8 o apenas lo hacen.
+
+Podemos añadir información empleando la función `plotKeyness` del paquete **tenet** para visualizar los resultados de una manera interactiva y bidimensional. Nos interesa saber, además del `chi2`, la frecuencia de las palabras. No es lo mismo una palabra rara que aparece poco que otra que no resulta tan común en la obra, pero que se emplea mucho en el capítulo en cuestión.
+
+```{r}
+
+# carga el paquete
+library(tenet)
+
+# crea el gráfico
+plotKeyness(cp, 
+            ref.cat= "08")
 
 
 
+```
 
-## Diccionarios y codificación temática 
+De ese modo, las palabras que se encuentren lo más lejos del eje horizontal y vertical serán las más específicas del capítulo. Por otra parte, aquellas que se encuentren más a la derecha, so. las más frecuentes en el capítulo 8. Por lo tanto, términos como "visita", "cocina", "marqués" se destacan tanto por su particular incidencia en el capítulo, como por su alta frecuencia. También vemos en rojo las palabras empleadas menos que lo esperado. 
 
-diccionario
+Si queremos analizar cuáles son las expresiones de peso en los demás capítulos, basta cambiar el argumento `ref.cat` por el número del capítulo que nos interese. Estos pasos exploratorios nos permiten tener una idea de los temas y personajes que aparecen en cada capítulo y, por consiguiente, de las palabras clave que los caracterizan.
 
 
+## Codificación temática
+
+### El uso de diccionarios
 
 ```{r, warning=F, message=F, error=F}
 
@@ -312,13 +460,7 @@ tagCorpus(cp,
   
 ```
 
-
-
-
-
-## Ubicación de las categorías temáticas en el texto
-
-
+### Ubicación de temas en el texto
 
 ```{r, warning=F, message=F, error=F, fig.width=10, fig.height=8}
 
@@ -337,7 +479,6 @@ plotLexDiv(cp,
            palette = pal$cat.awtools.spalette.6[1:2])
 
 ```
-
 
 Repetimos el mismo gráfico, ahora con las categorías de tiempo y espacio:
 
@@ -362,11 +503,11 @@ dicf <- dictionary(
   list(
     social=c("casino","teatro","espolón",
              "Paseo de Verano","Paseo de los curas",
-             "calle","plaza"),
+             "calle","plaza","tertulia","salon"),
     religioso=c("catedral","capilla","sacristía",
                 "claustro","seminario"),
     doméstico=c("vivero","\\bcasa\\b","hogar","alcoba",
-                "habitación","cama")))
+                "habitación","cama","cocina","despensa")))
 
 ft <- filterWords(cp, dicf)
 
@@ -382,9 +523,7 @@ plotSpike(ft,
 
 ```
 
-
-## Peso de los temas
-
+### Peso de los temas
 
 ```{r, warning=F, message=F, error=F}
 
@@ -417,14 +556,13 @@ plotVoronoiTree(data = xy,
 
 dd
 
+### Personajes en lugar de temas
 
-## Distribución de  personajes por capítulo
-
+En primer lugar, creamos un diccionario con los personajes de la novela a partir de la lista de personajes de la novela elaborada por Argüeles [-@arguelles1984].
 
 Juan Benito Argüelles - Nomina de personajes de "La Regenta"
 
 https://cvc.cervantes.es/literatura/cuadernos_del_norte/pdf/23/23_10.pdf
-
 
 ```{r, warning=F, message=F, error=F}
 
@@ -496,7 +634,7 @@ dich <- dictionary(
                 "\\b[T]eresa\\b","Teresina",
                 "Úrsula","Visitación","\\b[V]isita\\b",
                 "viuda del marqués de Corujedo")
-    )
+        )
   )
 )
 
@@ -544,11 +682,7 @@ plotStream(xx,
 
 ```
 
-
-
-## Asociación entre temas y personajes
-
-
+### Asociación entre temas y personajes
 
 ```{r, warning=F, message=F, error=F}
 
@@ -578,34 +712,189 @@ plotChord(d1,
 
 Ahora con los personajes
 
+Creamos un diccionario con todos los personajes sin agregar.
+
+```{r}
+
+# diccionario de personajes
+# sin agregar en una categoría
+# otros y otras
+dic.per <- dictionary(
+  list(
+    hombres=
+      list(
+        Alvaro=c("Álvaro Mesía",
+                 "Álvaro",
+                 "Mesía",
+                 "presidente del casino"),
+        Saturnino=c("Saturnino Bermúdez",
+                    "Saturnino",
+                    "Bermúdez",
+                    "Saturno",
+                    "Saturnillo"),
+        Fermin=c("Magistral",
+                 "Provisor",
+                 "Fermín",
+                 "De Pas",
+                 "Fermín de Pas",
+                 "Magistral"),
+        Victor=c("Víctor",
+                 "Víctor Quintanar",
+                 "Quintanar"),
+        Agustinito="Agustinito",
+        Amadeo="Amadeo",
+        Anacleto="Anacleto",
+        Anselmo="Anselmo",
+        Antero="Antero",
+        Antón="Antón Raíces",
+        Antonio="Antonio",
+        Barcaza="Barcaza",
+        Basilio="Basilio",
+        Bautista="Bautista",
+        Bedoya="Bedoya",
+        Belisario="Belisario",
+        Benítez="Benítez",
+        Bismark="Bismark",
+        Campillo=c("Campillo","\\b[C]hato\\b"),
+        Carlos="Carlos",
+        Pelaez="Peláez",
+        Ripamilan=c("Cayetano",
+                    "Cayetano Ripamilán",
+                    "Ripamilán"),
+        Celedonio="Celedonio",
+        Colás="Colás",
+        Corujedo="marqués de Corujedo",
+        Frígilis=c("Frígilis","Crespo"),
+        Custodio=c("Custodio"),
+        Cuervo=c("Olías de Cuervo","señor Cuervo"),
+        Diego="Diego",
+        Escosura="Escosura",
+        Estudiante=c("\\b[E]studiante\\b","Pepe","Trabuco"),
+        Foja="Foja",
+        Fortunato="Fortunato",
+        "Francisco de Asís"="Francisco de Asís",
+        "Francisco de Pas"="Francisco de Pas",
+        "Francisco de Osuma"="Francisco de Osuna",
+        Páez=c("Francisco Páez", "señor Páez", "señor de Páez"),
+        "Francisco Carraspique"="Francisco Carraspique",
+        Froilán="Froilán",
+        Frutos=c("don Frutos","Frutos Redondo"),
+        Fulgosio="Fulgosio",
+        Germán="Germán",
+        Glocester=c("Glocester","Restituto"),
+        Infanzón=c("señor Infanzón", "el Infanzón"),
+        Iriarte="Iriarte",
+        Joaquinito="Joaquinito",
+        Juanito="Juanito",
+        Leandro="Leando",
+        Maroto="Maroto",
+        Vegallana=c("marqués de Vegallana","\\s{1}[M]arqués\\b"),
+        Martínez="Martínez",
+        Matías="Matías",
+        Matiella="Matiella",
+        monaguillo="monaguillo",
+        "señor Orgaz"="señor Orgaz",
+        Palma="\\b[P]alma\\b",
+        Paquito=c("Paco","Paquito"),
+        Palomo=c("Palomo","Rodríguez"),
+        Parcerisa="Parcerisa",
+        Pedro="Pedro",
+        Perales="\\b[P]erales\\b",
+        Pinón="Pinón",
+        Pompeyo=c("Pompeyo","Pompeyo Guimarán","Guimarán"),
+        Robustiano="Robustiano",
+        Roque="señor Roque",
+        Rosendo="Rosendo",
+        Santos="don Santos",
+        Sousa="Sousa",
+        Trifón="Trifón",
+        Vinagre="\\b[V]inagre\\b",
+        Vinculete="Vinculete"
+        ),
+    mujeres=
+      list(
+        Ana=c("Ana",
+              "Anita",
+              "Regenta"),
+        Obdulia=c("Obdulia",
+                  "Obdulia Fandiño",
+                  "Fandiño",
+                  "Obdulita"),
+        Agapita="Agapita",
+        Águeda="Águeda",
+        Angelina="Angelina",
+        Anunciación=c("Anuncita","doña Anuncia"),
+        Camila="Camila",
+        Carolina=c("Carolina","Señora de Infanzón", "la Infanzón"),
+        Celestina="Celestina",
+        Edelmira="Edelmira",
+        Emma="Emma",
+        Fabiolita="Fabiolita",
+        Fulgencia="Fulgencia",
+        Gertrudis="Gertrudis",
+        "La González"="la González",
+        Juana="Juana",
+        Lola="Lola",
+        Lucía="doña Lucía",
+        Marquesa=c("marquesa","Rufina"),
+        Olvido="Olvido",
+        Paula="doña Paula",
+        Pepa="Pepa",
+        Perpétua="Guimarán, Perpétua",
+        Pilar="\\b[P]ilar\\b",
+        Petra="Petra",
+        Petrolina="doña Petronila",
+        Ramona="Ramona",
+        Rita="\\bRita\\b",
+        Rosa="\\bRosa\\b",
+        Rosita="Rosita",
+        Rudesinda="Rudesinda",
+        Servanda="Servanda",
+        Társila="Társila",
+        Teresa="\\b[T]eresa\\b",
+        Teresina="Teresina",
+        Úrsula="Úrsula",
+        Visita=c("Visitación","\\b[V]isita\\b"),
+        "Viuda de Corujedo"="viuda del marqués de Corujedo"
+        )
+  )
+)
+
+
+```
+
 ```{r, warning=F, message=F, error=F}
 
-# Reorganiza el corpus según
-# sentencias o frases
-cs <- corpus_reshape(cp, "sentences")
+# Emplea el corpus organizado
+# según párrafos
+cpp <- corpus(regp, 
+              text_field = "texto")
 
 # Calcula la frecuencia en la
-# que dos codigos del mismo 
+# que dos códigos del mismo 
 # diccionario aparecen juntos
-# en cada frase
-d1 <- matchCodes(cs, 
-                dich, 
-                level = 2, 
-                quietly=TRUE)
+# en cada párrafo
+d1 <- matchCodes(cpp, 
+                 dic.per, 
+                 level = 2, 
+                 quietly=TRUE)
 
 # Ordena los resultados de mayor a menor
 d1 <- d1[order(d1$value, decreasing = T),]
 
+# Elimina las asociaciones con Ana
+d1 <- d1[d1$term1!="Ana",]
+d1 <- d1[d1$term2!="Ana",]
 
+# Genera un gráfico de cuerdas
+# para visualizar las asociaciones
 plotChord(d1, 
           from = "term1", 
           to ="term2", 
-          value= "value", elementId = "chord2")
+          value= "value", 
+          elementId = "chord3")
 
 ```
-
-
-
 
 ```{r, warning=F, message=F, error=F, fig.width=12, fig.height=36}
 
@@ -623,6 +912,9 @@ for(i in 1:30){
                    level = 2, 
                    quietly=TRUE)
   
+  d1 <- d1[d1$term1!="Ana",]
+  d1 <- d1[d1$term2!="Ana",]
+
   d1$capitulo <- i
   
   d1 <- d1[order(d1$value, decreasing = T),]
@@ -689,13 +981,55 @@ ggarrange(plots=px,
 ```
 
 
-## Análisis de conglomerados
+## *Clusters* y escalonado de textos
 
 
+### Análisis de conglomerados
+
+```{r}
+
+tk <- tokens(cp, 
+             remove_punct = T, 
+             remove_numbers = T, 
+             remove_separators = T, 
+             remove_symbols = T)
+
+tk <- tokens_remove(tk, 
+                    pattern=stopwords("es"))
+
+dtm <- dfm(tk)
+
+library(quanteda.textstats)
+
+tstat_dist <- as.dist(textstat_dist(dtm))
+clust <- hclust(tstat_dist)
+
+plot(clust, xlab = "Distance", ylab = NULL)
+
+
+
+```
 
 
 ## Escalonado de textos: Wordfish
 
+```{r}
 
+library(quanteda.textmodels)
+library(quanteda.textplots)
+library(ggplot2)
 
+wf <- textmodel_wordfish(dtm)
 
+textplot_scale1d(wf) +
+  geom_hline(yintercept = 0, 
+             linetype = "dashed",
+             color="red3")
+
+```
+
+Esta escala se podría interpretar de distintas maneras. Una de ellas es que los capítulos situados más a la izquierda representan una mayor intensidad de la vida social de Vetusta, mientras que aquellos más a la derecha se relacionan con la vida privada, íntima y la infancia de La Regenta.
+
+También podríamos leer los resultados de acuerdo con el protagonismo o mayor centralidad de ciertos personajes según el punto de la escala. Más a la izquierda predominan los Marqueses, Álvaro Mesía (antes de su relación con Ana Ozores) y la sociedad vetustense. En el centro se sitúa Fermín de Pas, que se interpone entre la vida privada de Ana y la vida en sociedad. En la derecha encontramos a Víctor, su esposo, Álvaro (hechos consumados) y en el extremo, la familia de Ana, especialmente en su infancia.
+
+De todas formas, ambas interpretaciones sugieren una dualidad entre la vida íntima y relativamente reservada de Ana en contraste con la vida social y pública de Vetusta. Los dos mundos se tocan en ocasiones concretas por intermedio de algunos actores que transitan dentre ellos, como Fermín de Pas o Álvaro Mesía.
