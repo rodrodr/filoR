@@ -335,7 +335,7 @@ reactable(kw_amor,
 
 Saltan a la vista los calificativos y acciones que se revelan cuando se analiza el contexto de "adulterio". Se ven atributos como "repugnante", "infame", "ominoso", "escándalo". También acciones que se asocian como respuesta al adulterio: "vengar", "duelo", "batirme". En pocas palabras, se nota el rechazo social al adulterio y se puede fácilmente imaginar un desaforado cornudo, pistola en mano, buscando venganza.  
 
-Podemos emplear un tipo de visualización de datos llamado **árbol de palabras** para representar gráficamente el contexto en el que aparece la palabra "adulterio". En este caso, vamos a emplear la función `wordtree` del paquete **tenet** para crear un árbol de palabras que muestre las palabras que aparecen antes y después de "adulterio" en el texto. No obstante, como hemos visto, la palabra "adulterio" no aparece muchas veces en la novela, por lo que el árbol de palabras no será muy complejo ni tampoco interesante. Probemos algo más picantes, que salga el "amor".
+Podemos emplear un tipo de visualización de datos llamado **árbol de palabras** para representar gráficamente el contexto en el que aparece la palabra "adulterio". En este caso, vamos a emplear la función `wordtree` del paquete **tenet** para crear un árbol de palabras que muestre las palabras que aparecen antes y después de "adulterio" en el texto. No obstante, como hemos visto, la palabra "adulterio" no aparece muchas veces en la novela, por lo que el árbol de palabras no será muy complejo ni tampoco interesante. Probemos algo más picante, que salga el "amor".
 
 ```{r, eval=F}
 
@@ -981,10 +981,9 @@ ggarrange(plots=px,
 ```
 
 
-## *Clusters* y escalonado de textos
+## *Clusters*, Análisis de correspondencia y escalonado de textos
 
-
-### Análisis de conglomerados
+### Análisis de conglomerados (*clusters*)
 
 ```{r}
 
@@ -1011,7 +1010,10 @@ plot(clust, xlab = "Distance", ylab = NULL)
 ```
 
 
-## Escalonado de textos: Wordfish
+### Análisis de correspondencia (*CA*)
+
+
+### Escalonado de textos: Wordfish
 
 ```{r}
 

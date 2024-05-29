@@ -12,20 +12,18 @@ library(quanteda)
 
 ## Introducción
 
-El R permite diferentes tipos de análisis de textos.
+(EN BREVE - PARA SEGUNDA SESIÓN DEL CURSO)
 
 
-## Redes de diálogo en "Tres sombreros de copa"
 
-Abrimos los datos
+## Redes de diálogo 
+
 
 ```{r}
 
-# carga los datos de "La Regenta"
-load("../textos/Regenta.RData")
+# carga los datos de la obra
+load("../textos/Tres_sombreros_de_copa.RData")
 
 ```
 
-Hacemos un análisis sumario de los capítulos
 
-aaa
