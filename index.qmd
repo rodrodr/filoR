@@ -2,66 +2,55 @@
 title: "<b>filoR</b><br>Análisis de textos literarios con R"
 ---
 
-
-
 ## El curso
-
-
 
 Esta página web forma parte del curso "Análisis de textos literarios con R". En ella, se recogen los materiales y ejemplos que se desarrollarán durante las sesiones.
 
-
 ## Los profesores
 
+[Rodrigo Rodrigues-Silveira ]{style="background-color:purple;color:white;padding:4px;"}
 
-<span style="background-color:purple;color:white;padding:4px;">Rodrigo Rodrigues-Silveira </span> 
+[rodrodr\@usal.es](mailto:rodrodr@usal.es)
 
-[rodrodr@usal.es](mailto:rodrodr@usal.es)
-
-Profesor de ciencia política de la USAL. Director del proyecto "Comportamiento legislativo y erosión democrática en América Latina" (PELA Comportamiento).
+Profesor de ciencia política de la USAL. Director del proyecto "Comportamiento legislativo y erosión democrática en América Latina" (PELA Comportamiento). Miembro de los GIR "Política Comparada en América Latina" y "Tecnología y poder en el pensamiento y las letras".
 
 <br>
 
-<span style="background-color:green;color:white;padding:4px;">Sheila Pastor</span>
+[Sheila Pastor]{style="background-color:green;color:white;padding:4px;"}
 
-[sheilap@usal.es](mailto:sheilap@usal.es)
+[sheilap\@usal.es](mailto:sheilap@usal.es)
 
-Profesora de literatura hispanoamericana de la USAL...
+Profesora en el Departamento de Literatura española e hispanoamericana de la USAL. Miembro del Instituto de Estudios Medievales y Renacentistas y de Humanidades Digitales y del GIR Tecnología y poder en el pensamiento y las letras.
 
 ## El contenido
 
 Durante el curso se abordarán los siguientes temas:
 
-- <span style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-1&color=orange);">preparación de textos literarios</span> para análisis cuantitativos
+-   [preparación de textos literarios]{style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-1&color=orange);"} para análisis cuantitativos
 
-- análisis de <span style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-2&color=pink);">frecuencias de palabras</span>
+-   análisis de [frecuencias de palabras]{style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-2&color=pink);"}
 
-- codificación temática
+-   codificación temática
 
-- análisis de conglomerados <span style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-3&color=purple);color:white"><b>clusters</b></span>
+-   análisis de conglomerados [<b>clusters</b>]{style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-3&color=purple);color:white"}
 
-- escalonado de textos (uni y multidimensional)
+-   escalonado de textos (uni y multidimensional)
 
-- modelage de tópicos
+-   modelado de tópicos
 
-- <span style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-4&color=skyblue);">análisis de redes</span> sociales
+-   [análisis de redes]{style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-4&color=skyblue);"} sociales
 
-- técnicas de <span style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-5&color=gold);">visualización de texto</span> 
-
+-   técnicas de [visualización de texto]{style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-5&color=gold);"}
 
 ## Sesiones
 
 Las sesiones tendrán lugar en el etéreo espacio de la nube, en la plataforma Zoom. Los enlaces de acceso a las sesiones se enviarán a los correos electrónicos de los participantes.
 
+[DÍA 1 - 04/05/2024]{style="background-color:darkviolet;color:white;padding:4px;"} de 10 a 14h
 
-<span style="background-color:darkviolet;color:white;padding:4px;">DÍA 1 - 04/05/2024</span> de 10 a 14h
+[DÍA 2 - 13/05/2024]{style="background-color:seagreen;color:white;padding:4px; "} de 10 a 14h
 
-
-<span style="background-color:seagreen;color:white;padding:4px; ">DÍA 2 - 13/05/2024</span> de 10 a 14h
-
-
-
-## `r knitr::asis_output("\U1F916")` Servicio técnico `r knitr::asis_output("\U1F916")`	
+## `r knitr::asis_output("\U1F916")` Servicio técnico `r knitr::asis_output("\U1F916")`
 
 Para que podáis reproducir los ejemplos de análisis presentados durante el curso debéis instalar en vuestros ordenadores el [R](https://cran.r-project.org/) y el [RStudio Desktop](https://posit.co/downloads/).
 
@@ -83,4 +72,3 @@ install.packages(pc)
 devtools::install_github("rodrodr/tenet", force=T)
 
 ```
-

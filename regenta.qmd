@@ -537,7 +537,7 @@ plotLexDiv(cp,
 
 <br>
 
-Como podemos observar, las palabras clave relacionadas al espacio y tiempo se intercalan sin presentar un patrón claro. Por ello, sería útil realizar un análisis más detallado de los espacios (y de los tiempos) mencionados en la novela. Para ello, podemos utilizar la función `filterWords` del paquete **tenet** para seleccionar solo las palabras clave relacionadas al espacio y generar un gráfico de dispersión léxica interactivo que muestre la distribución de estos términos en el texto empleando la función `plotSpike`.
+Como podemos observar, las palabras clave relacionadas al espacio y tiempo se intercalan sin presentar un patrón claro, pero sí es posible apreciar cómo a partir del capítulo 15 las alusiones al tiempo se acrecientan, de una manera regular que se mantiene hasta el 30. Esto corrobora los análisis filológicos que se han realizado sobre la estructura de la novela. Igualmente, sería útil realizar un análisis más detallado de los espacios (y de los tiempos) mencionados en la novela. Para ello, podemos utilizar la función `filterWords` del paquete **tenet** para seleccionar solo las palabras clave relacionadas al espacio y generar un gráfico de dispersión léxica interactivo que muestre la distribución de estos términos en el texto empleando la función `plotSpike`.
 
 Creamos un nuevo diccionario con tres categorías analíticas del espacio: social, religioso y doméstico. El primer tipo reúne aquellos lugares de encuentro y diversión, como casinos, teatros y salones donde se da la interacción de los personajes nobles y de alta sociedad.
 
@@ -582,7 +582,10 @@ plotSpike(ft,
 
 <br>
 
-Ahora, los patrones quedan mucho más evidentes. Los espacios religiosos se destacan en los dos primeros capítulos de forma clara, así como en el capítulo 23. Además, es ahí donde termina la novela. Los ambientes domésticos, predominantes en los pasajes dedicados a la interacción con Ana, que se alternan con los espacios "sociales" en los que se desenvuelve la vida de la ciudad y de los demás personajes.
+Cada círculo representa un capítulo y el el número que aparece en el centro es la cantidad total de términos encontrados según el diccionario. Si pasamos el cursor sobre un "pincho" que sale del círculo, se despliega el nombre del capítulo, la categoría del diccionario a que pertenece la palabra, el total de palabras encontradas para esa categoría y la palabra clave. 
+
+Ahora, los patrones quedan mucho más evidentes. Los espacios religiosos se destacan en los dos primeros capítulos de forma clara, así como en el capítulo 23. Además, es ahí donde termina la novela. Los ambientes domésticos, predominantes en los pasajes dedicados a la interacción con Ana, que se alternan con los espacios "sociales" en los que se desenvuelve la vida de la ciudad y de los demás personajes. 
+
 
 ### Peso de los temas
 
