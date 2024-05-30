@@ -1185,7 +1185,15 @@ plot(clust, xlab = "Distance", ylab = NULL)
 
 El dendrograma representa una forma de representación visual de las distancias entre los capítulos. Vemos existe un gran grupo de capítulos (con sus subgrupos) y dos conglomerados más pequeños. Uno, formado por los capítulos 12, 13, 16, 20, 21 y 22 y, otro, por el 29 y 30.
 
-Revisar el contenido de los capítulos para interpretar los resultados.
+Como podemos ver, la organización en grupos resulta coherente con el desarrollo temático de cada parte de la novela. Por ejemplo, los capítulos 4 y 5 cuentan la infancia y juventud de Ana. El 29 y el 30 son los que concluyen la obra con la consumación del adulterio y su desenlace trágico.
+
+Los apartados 12, 20 y 22, por otro lado, se centran en la relación de Fermín con sus detractores y en la muerte de Don Santos. Los capítulos 13, 16 y 21, por otro lado, se centran en las tentaciones iniciales de Ana con Mesía y en su entrega al misticismo intermediada por Fermín.
+
+El 11 y el 15 se dedican a la relación de Fermín con su madre.
+
+Los capítulos 1, 2, 3, 6, 7, 8,14 y 24, por otro lado, describen la presentación de los personajes principales, vida social de Vetusta, el carácter de Fermín, así como las fiestas en el casino y en casa de los marqueses.
+
+Finalmente, el bloque representado por los apartados 9, 10, 17, 18, 19, 23, 25, 26, 27 y 28 se centra en los constantes titubeos de Ana entre el misticismo (representado por Fermín) y el romanticismo / erotismo (simbolizado por Mesía).
 
 
 ### Escalonado unidimensional de textos: Wordfish
@@ -1215,10 +1223,45 @@ De todas formas, ambas interpretaciones sugieren una dualidad entre la vida ínt
 
 ### Análisis de correspondencia (*CA*)
 
-El análisis de correspondencia es una técnica que permite visualizar la relación entre variables categóricas en un espacio bidimensional. En este caso, hemos aplicado el análisis de correspondencia a los personajes y los capítulos de *La Regenta* para ver cómo se relacionan entre sí.
+El análisis de correspondencia es una técnica de reducción de dimensionalidad de bases de datos complejas. En nuestro caso, tenemos una matriz de frecuencia de palabras en la que cada palabra representa una dimensión. El análisis de correspondencia permite reducir el número de dimensiones para que permitan visualizar la relación entre los textos. El objetivo consiste en situar a los capítulos en un espacio bidimensional que permita revelar características estructurales latentes en la obra.
 
+```{r}
 
-### Análisis de componentes principales (*PCA*)
+# Carga los paquetes
+library(quanteda.textmodels)
+library(ggplot2)
+library(ggrepel)
 
-aa
+# Ejecuta el análisis de correspondencias
+cca <- textmodel_ca(dtm)
+
+# Extrae las coordenadas de los capítulos
+dd <- data.frame(cca$rowcoord)
+dd$name <- as.character(rownames(dd))
+dd <- dd[, c("name", "Dim1", "Dim2")]
+
+# crea un gráfico de dispersión 
+# para examinar los resultados
+ggplot(dd, aes(x = Dim1, y = Dim2)) +
+  geom_point() +
+  geom_text_repel(aes(label = name)) +
+  theme_classic() +
+  theme(legend.position = "none")+
+  geom_hline(yintercept = 0, 
+             color = "red3", 
+             linetype = "dashed") +
+  geom_vline(xintercept = 0, 
+             color = "red3", 
+             linetype = "dashed")+
+  xlab("Dimensión 1") +
+  ylab("Dimensión 2") +
+  labs(title = "Análisis de correspondencias")
+
+```
+
+El gráfico de dispersión muestra la relación entre los capítulos de *La Regenta* en un espacio bidimensional. Los capítulos se sitúan en función de su relación semántica. Los capítulos más cercanos entre sí comparten un mayor número de palabras y, por tanto, una mayor relación semántica. Los capítulos más alejados, por otro lado, comparten menos palabras y, por tanto, una menor relación semántica.
+
+La distancia al punto de origen (0,0) indica el peso del capítulo en cada una de las dimensiones. Por ejemplo, el capítulo 1 tiene un importante peso en ambos ejes, así como el 06. No obstante, el 22 y el 05 se destacan en la segunda dimensión, pero con poca incidencia sobre la primera.
+
+En los resultados, llama la atención el conglomerado de capítulos que se concentran en la parte derecha del gráfico. En su mayoría, se ubican en la segunda parte de la novela, donde se narra la evolución de la relación entre Ana y Mesía, así como el desenlace trágico de la obra. Por otro lado, los capítulos periféricos se relacionan con la vida social de Vetusta, los desarrollos específicos de Fermín y la presentación de los personajes.
 

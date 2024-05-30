@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -131,9 +165,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#preparación-de-los-textos" id="toc-preparación-de-los-textos" class="nav-link active" data-scroll-target="#preparación-de-los-textos">Preparación de los textos</a></li>
-  <li><a href="#la-regenta" id="toc-la-regenta" class="nav-link" data-scroll-target="#la-regenta">La Regenta</a></li>
-  <li><a href="#tres-sombreros-de-copa" id="toc-tres-sombreros-de-copa" class="nav-link" data-scroll-target="#tres-sombreros-de-copa">Tres sombreros de copa</a></li>
+  <li><a href="#el-curso" id="toc-el-curso" class="nav-link active" data-scroll-target="#el-curso">El curso</a></li>
+  <li><a href="#los-profesores" id="toc-los-profesores" class="nav-link" data-scroll-target="#los-profesores">Los profesores</a></li>
+  <li><a href="#el-contenido" id="toc-el-contenido" class="nav-link" data-scroll-target="#el-contenido">El contenido</a></li>
+  <li><a href="#sesiones" id="toc-sesiones" class="nav-link" data-scroll-target="#sesiones">Sesiones</a></li>
+  <li><a href="#servicio-técnico" id="toc-servicio-técnico" class="nav-link" data-scroll-target="#servicio-técnico">🤖 Servicio técnico 🤖</a></li>
   </ul>
 </nav>
     </div>
@@ -157,17 +193,61 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="preparación-de-los-textos" class="level2">
-<h2 class="anchored" data-anchor-id="preparación-de-los-textos">Preparación de los textos</h2>
-<p>La preparación representa el paso previo para convertir los textos en datos. En ese apartado, podrás encontrar cómo se han preparado los textos paso a paso.</p>
+<section id="el-curso" class="level2">
+<h2 class="anchored" data-anchor-id="el-curso">El curso</h2>
+<p>Esta página web forma parte del curso “Análisis de textos literarios con R”. En ella, se recogen los materiales y ejemplos que se desarrollarán durante las sesiones.</p>
 </section>
-<section id="la-regenta" class="level2">
-<h2 class="anchored" data-anchor-id="la-regenta">La Regenta</h2>
-<p>En el siguiente tópico, aplicamos un conjunto de técnicas de análisis y visualización de datos a la novela “La Regenta” de Leopoldo Alas Clarín.</p>
+<section id="los-profesores" class="level2">
+<h2 class="anchored" data-anchor-id="los-profesores">Los profesores</h2>
+<p><span style="background-color:purple;color:white;padding:4px;">Rodrigo Rodrigues-Silveira </span></p>
+<p><a href="mailto:rodrodr@usal.es">rodrodr@usal.es</a></p>
+<p>Profesor de ciencia política de la USAL. Director del proyecto “Comportamiento legislativo y erosión democrática en América Latina” (PELA Comportamiento).</p>
+<p><br></p>
+<p><span style="background-color:green;color:white;padding:4px;">Sheila Pastor</span></p>
+<p><a href="mailto:sheilap@usal.es">sheilap@usal.es</a></p>
+<p>Profesora de literatura hispanoamericana de la USAL…</p>
 </section>
-<section id="tres-sombreros-de-copa" class="level2">
-<h2 class="anchored" data-anchor-id="tres-sombreros-de-copa">Tres sombreros de copa</h2>
-<p>Finalmente, utilizamos la obra de teatro “Tres sombreros de copa” de Miguel Mihura como fuente para el empleo de técnicas de análisis de redes sociales en R a partir de textos literarios.</p>
+<section id="el-contenido" class="level2">
+<h2 class="anchored" data-anchor-id="el-contenido">El contenido</h2>
+<p>Durante el curso se abordarán los siguientes temas:</p>
+<ul>
+<li><p><span style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-1&amp;color=orange);">preparación de textos literarios</span> para análisis cuantitativos</p></li>
+<li><p>análisis de <span style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-2&amp;color=pink);">frecuencias de palabras</span></p></li>
+<li><p>codificación temática</p></li>
+<li><p>análisis de conglomerados <span style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-3&amp;color=purple);color:white"><b>clusters</b></span></p></li>
+<li><p>escalonado de textos (uni y multidimensional)</p></li>
+<li><p>modelage de tópicos</p></li>
+<li><p><span style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-4&amp;color=skyblue);">análisis de redes</span> sociales</p></li>
+<li><p>técnicas de <span style="background: url(https://s2.svgbox.net/pen-brushes.svg?ic=brush-5&amp;color=gold);">visualización de texto</span></p></li>
+</ul>
+</section>
+<section id="sesiones" class="level2">
+<h2 class="anchored" data-anchor-id="sesiones">Sesiones</h2>
+<p>Las sesiones tendrán lugar en el etéreo espacio de la nube, en la plataforma Zoom. Los enlaces de acceso a las sesiones se enviarán a los correos electrónicos de los participantes.</p>
+<p><span style="background-color:darkviolet;color:white;padding:4px;">DÍA 1 - 04/05/2024</span> de 10 a 14h</p>
+<p><span style="background-color:seagreen;color:white;padding:4px; ">DÍA 2 - 13/05/2024</span> de 10 a 14h</p>
+</section>
+<section id="servicio-técnico" class="level2">
+<h2 class="anchored" data-anchor-id="servicio-técnico">🤖 Servicio técnico 🤖</h2>
+<p>Para que podáis reproducir los ejemplos de análisis presentados durante el curso debéis instalar en vuestros ordenadores el <a href="https://cran.r-project.org/">R</a> y el <a href="https://posit.co/downloads/">RStudio Desktop</a>.</p>
+<p>También debéis ejecutar el siguiente código en R que instala los paquetes necesarios:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crea un vector con los paquetes a instalar</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"quanteda"</span>,<span class="st">"quanteda.textplots"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"quanteda.textmodels"</span>,<span class="st">"quanteda.textstats"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"stringi"</span>,<span class="st">"readr"</span>,<span class="st">"gutenbergr"</span>,<span class="st">"ggplot2"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"ggrepel"</span>,<span class="st">"reactable"</span>,<span class="st">"tidyverse"</span>,<span class="st">"devtools"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"egg"</span>,<span class="st">"network"</span>,<span class="st">"sna"</span>,<span class="st">"ggnetwork"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Instala los paquetes</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(pc)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Instala el paquete tenet que no está en CRAN</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"rodrodr/tenet"</span>, <span class="at">force=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 
 
 </section>
