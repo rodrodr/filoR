@@ -16,6 +16,8 @@ website:
         text: La Regenta
       - href: sombreros.html
         text: Tres sombreros de copa
+  page-footer:
+    left: "&copy; Copyright 2024, Rodrigo Rodrigues-Silveira"
         
 execute:
   warning: false
