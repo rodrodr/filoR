@@ -6,21 +6,30 @@ title: "<b>filoR</b><br>Análisis de textos literarios con R"
 
 Esta página web forma parte del curso "Análisis de textos literarios con R". En ella, se recogen los materiales y ejemplos que se desarrollarán durante las sesiones.
 
+
 ## Los profesores
 
-[Rodrigo Rodrigues-Silveira ]{style="background-color:purple;color:white;padding:4px;"}
+<table cellpadding="4">
+  <tr>
+    <td valign="top">![](foto_rodrigo2.jpg)</td>
+    <td valign="top">[Rodrigo Rodrigues-Silveira ]{style="background-color:purple;color:white;padding:4px;"}
 
 [rodrodr\@usal.es](mailto:rodrodr@usal.es)
 
 Profesor de ciencia política de la USAL. Director del proyecto "Comportamiento legislativo y erosión democrática en América Latina" (PELA Comportamiento). Miembro de los GIR "Política Comparada en América Latina" y "Tecnología y poder en el pensamiento y las letras".
-
-<br>
-
-[Sheila Pastor]{style="background-color:green;color:white;padding:4px;"}
+</td>
+  </tr>
+  <tr><td><br></td></tr>
+  <tr>
+    <td valign="top">![](Sheila.jpg)</td>
+    <td valign="top">[Sheila Pastor]{style="background-color:green;color:white;padding:4px;"}
 
 [sheilap\@usal.es](mailto:sheilap@usal.es)
 
-Profesora en el Departamento de Literatura española e hispanoamericana de la USAL. Miembro del Instituto de Estudios Medievales y Renacentistas y de Humanidades Digitales y del GIR Tecnología y poder en el pensamiento y las letras.
+Profesora en el Departamento de Literatura española e hispanoamericana de la USAL. Miembro del Instituto de Estudios Medievales y Renacentistas y de Humanidades Digitales y del GIR Tecnología y poder en el pensamiento y las letras.</td>
+  </tr>
+</table>
+
 
 ## El contenido
 
