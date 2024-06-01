@@ -39,7 +39,7 @@ dic.per <- dictionary(
   list(
     hombres=
       list(
-        Alvaro=c("Álvaro Mesía",
+        Álvaro=c("Álvaro Mesía",
                  "Álvaro",
                  "Mesía",
                  "presidente del casino"),
@@ -48,13 +48,13 @@ dic.per <- dictionary(
                     "Bermúdez",
                     "Saturno",
                     "Saturnillo"),
-        Fermin=c("Magistral",
+        Fermín=c("Magistral",
                  "Provisor",
                  "Fermín",
                  "De Pas",
                  "Fermín de Pas",
                  "Magistral"),
-        Victor=c("Víctor",
+        Víctor=c("Víctor",
                  "Víctor Quintanar",
                  "Quintanar"),
         Agustinito="Agustinito",
@@ -175,6 +175,126 @@ dic.per <- dictionary(
         )
   )
 )
+
+
+plotGrid <- function(data, x=NULL, y=NULL, size=NULL, color=NULL, tooltip=NULL, palette=c("#F7DC05","#3d98d3","#EC0B88","#5e35b1","#f9791e","#3dd378","#c6c6c6","#444444"),grid.color="grey90",interactive=TRUE, family="Helvetica", x.axis.angle=90, standardize=FALSE, avg.mark=TRUE, axis="y", alpha=TRUE, width_svg = 9, height_svg = 6, leg.size="Size",leg.color="Dimension", point.shape="circle"){
+  
+  if(point.shape=="circle"){
+    point.shape <- 19
+    pt.bord <- 21
+  }else if(point.shape=="square"){
+    point.shape <- 15
+    pt.bord <- 22
+  }else if(point.shape=="triangle"){
+    point.shape <- 17
+    pt.bord <- 24
+  }else if(point.shape=="diamond"){  
+    point.shape <- 18
+    pt.bord <- 23
+  }else{
+    point.shape <- 19
+    pt.bord <- 21
+  }  
+    
+  if(axis=="y"){
+    axis <- y
+  }else{
+    axis <- x
+  }
+  
+  if(is.null(color)){
+    data$color <- "cor"
+    color <- "color"
+  }
+  
+  ag <- aggregate(list(avg= data[[size]]), 
+                  by=list(x=data[[axis]]), 
+                  mean, 
+                  na.rm=T)
+  
+  names(ag)[1] <- axis
+  
+  data <- merge(data, ag, by=axis)
+  
+  data$base_100 <- data[[size]]/data[["avg"]]*100
+  
+  
+  if(standardize==TRUE){
+    
+    if(alpha==T){
+      data$alpha = data[[size]]
+    }else{
+      data$alpha = 1
+    }
+    
+    data$avg <- 100
+    
+    data[[size]] <- round(data$base_100,1)
+    
+    
+  }else{
+    
+    data$alpha = 1
+  }
+  
+  if(is.null(tooltip)){
+    tooltip <- data[[size]]
+  }
+  
+  p <- ggplot2::ggplot(data,
+              ggplot2::aes(
+                y=.data[[y]], 
+                x=.data[[x]], 
+                size = .data[[size]], 
+                color = .data[[color]],
+                alpha = .data[["alpha"]]))
+  
+  p <- p + cowplot::theme_minimal_grid(color = grid.color)
+  
+  p <- p + ggiraph::geom_point_interactive(
+    ggplot2::aes(tooltip=tooltip),
+    shape=point.shape)+ 
+    ggplot2::scale_radius(range = c(0, 10), 
+                 trans = "sqrt")
+  
+
+  
+  if(standardize==TRUE | avg.mark==TRUE){
+    p <- p + ggplot2::geom_point(
+              ggplot2::aes(y=.data[[y]],
+                          x=.data[[x]],
+                          size=.data[["avg"]]), 
+              shape=pt.bord, 
+              color="black", 
+              stroke=0.5)
+  }
+  
+  p <- p + ggplot2::theme(legend.position="left",
+                 axis.text.y = ggplot2::element_text(family = family),
+                 axis.text.x = ggplot2::element_text(angle = x.axis.angle, 
+                                            family =family,
+                                            vjust = 0.5, 
+                                            hjust=1))+
+    ggplot2::xlab("")+
+    ggplot2::ylab("")+
+    ggplot2::labs(size=leg.size)
+  
+  
+  p <- p + ggplot2::scale_color_manual(name=leg.color,values= palette)
+  
+  p <- p + ggplot2::guides(alpha="none", color = ggplot2::guide_legend(override.aes = list(size = 3))) 
+  
+  
+  if(interactive==T){
+    p <- ggiraph::girafe(ggobj = p, code = print, width_svg = width_svg, height_svg = height_svg)
+  } else {
+    p <- p
+  }
+  
+  p
+  
+}
+
 
 
 ```
@@ -667,13 +787,13 @@ dich <- dictionary(
   list(
     hombres=
       list(
-           Alvaro=c("Álvaro Mesía","Álvaro","Mesía",
+           Álvaro=c("Álvaro Mesía","Álvaro","Mesía",
                     "presidente del casino"),
            Saturnino=c("Saturnino Bermúdez","Saturnino",
                        "Bermúdez","Saturno","Saturnillo"),
-           Fermin=c("Magistral","Provisor","Fermín",
+           Fermín=c("Magistral","Provisor","Fermín",
                     "De Pas","Fermín de Pas","Magistral"),
-           Victor=c("Víctor","Víctor Quintanar","Quintanar"),
+           Víctor=c("Víctor","Víctor Quintanar","Quintanar"),
            Otros=c(
                    "Agustinito","Amadeo","Anacleto",
                    "Anselmo","Antero","Antón Raíces",
@@ -813,6 +933,43 @@ plotStream(xx,
 
 En este último gráfico queda más clara la evolución de los personajes en la novela y los momentos en los que el autor decide vincularles más o menos en su narrativa. Además, al pasar el cursor sobre un capítulo, podemos ver la frecuencia de aparición de todos y cada uno de los personajes en ese capítulo en concreto.
 
+Otra manera de verlo es por medio de un gráfico de símbolos proporcionales organizados en una grada de N personajes por N capítulos. En este caso, la función `plotGrid` nos permite hacerlo de manera sencilla: 
+
+```{r}
+
+plotGrid(xx, 
+         x="groups", 
+         y="level1", 
+         size="frequency", 
+         color="level1", 
+         width_svg = 9, height_svg = 4, 
+         leg.size="Frecuencia", 
+         leg.color="Personaje",  
+         grid.color="grey99")
+
+```
+
+Otra manera de verlo es estandarizar la frecuencia como porcentaje de la media. De ese modo, observamos la variación de la frecuencia de aparición de los personajes en cada capítulo respecto a su frecuencia media en la novela. Para ello, empleamos el parámetro `standardize` de `plotGrid`. También podemos resaltar los valores más altos haciendo con que los colores sean más transparentes para los valores más bajos. Para ello, empleamos el parámetro `alpha` de `plotGrid`.
+
+```{r}
+
+plotGrid(xx, 
+         x="groups", 
+         y="level1", 
+         size="frequency", 
+         color="level1", 
+         width_svg = 9, height_svg = 4, 
+         leg.size="Media (%)", # Cambia la leyenda 
+         leg.color="Personaje",  
+         grid.color="grey99",
+         standardize = TRUE,   # Estandariza los valdores
+         alpha=TRUE)           # Transparencia
+
+```
+
+La comparación entre los dos últimos gráficos nos brinca entradas distintas a la novela. En el primero, queda evidente la diferencia entre personajes con una participación más o menos constante en los capítulos y otros que aparecen de manera más ocasional o intermitente. El segundo, por otro lado, no solo señala los puntos donde cada personaje aparece más o menos de forma muy clara, sino que también permite comparar los capítulos entre sí. Dos ejemplos extremos: el capítulo 3, en el que solamente Víctor aparece más de lo habitual, y el capítulo 13, que se puede considerar coral por la diversidad de personajes que entran en escena. Un frenesí en el que todos los grupos superan la media de frecuencia de los demás capítulos de la novela.
+
+
 ### Asociación entre temas (y personajes)
 
 Hasta ahora hemos analizado la frecuencia de aparición de los personajes en la novela y cómo esta varía a lo largo de los capítulos. No obstante, también podemos estudiar la relación que los temas desarrollan entre sí. ¿Hasta qué punto dos ideas o conceptos aparecen en el mismo párrafo o capítulo del libro? Por ejemplo, ¿cuál es la relación entre iglesia y misticismo o entre sentimientos y el tiempo?
@@ -864,7 +1021,7 @@ dic.per <- dictionary(
   list(
     hombres=
       list(
-        Alvaro=c("Álvaro Mesía",
+        Álvaro=c("Álvaro Mesía",
                  "Álvaro",
                  "Mesía",
                  "presidente del casino"),
@@ -873,13 +1030,13 @@ dic.per <- dictionary(
                     "Bermúdez",
                     "Saturno",
                     "Saturnillo"),
-        Fermin=c("Magistral",
+        Fermín=c("Magistral",
                  "Provisor",
                  "Fermín",
                  "De Pas",
                  "Fermín de Pas",
                  "Magistral"),
-        Victor=c("Víctor",
+        Víctor=c("Víctor",
                  "Víctor Quintanar",
                  "Quintanar"),
         Agustinito="Agustinito",
