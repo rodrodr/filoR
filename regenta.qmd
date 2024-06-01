@@ -949,7 +949,7 @@ plotGrid(xx,
 
 ```
 
-Otra manera de verlo es estandarizar la frecuencia como porcentaje de la media. De ese modo, observamos la variación de la frecuencia de aparición de los personajes en cada capítulo respecto a su frecuencia media en la novela. Para ello, empleamos el parámetro `standardize` de `plotGrid`. También podemos resaltar los valores más altos haciendo con que los colores sean más transparentes para los valores más bajos. Para ello, empleamos el parámetro `alpha` de `plotGrid`.
+También podemos estandarizar la frecuencia como porcentaje de la media. De ese modo, observamos la variación de la cantidad de apariciones de los personajes en cada capítulo respecto a su media en la novela. Para ello, empleamos el parámetro `standardize` de `plotGrid`. También podemos resaltar los valores más altos haciendo con que los colores sean más transparentes para los valores más bajos. Para ello, empleamos el parámetro `alpha` de `plotGrid`.
 
 ```{r}
 
@@ -967,7 +967,7 @@ plotGrid(xx,
 
 ```
 
-La comparación entre los dos últimos gráficos nos brinca entradas distintas a la novela. En el primero, queda evidente la diferencia entre personajes con una participación más o menos constante en los capítulos y otros que aparecen de manera más ocasional o intermitente. El segundo, por otro lado, no solo señala los puntos donde cada personaje aparece más o menos de forma muy clara, sino que también permite comparar los capítulos entre sí. Dos ejemplos extremos: el capítulo 3, en el que solamente Víctor aparece más de lo habitual, y el capítulo 13, que se puede considerar coral por la diversidad de personajes que entran en escena. Un frenesí en el que todos los grupos superan la media de frecuencia de los demás capítulos de la novela.
+La comparación entre los dos últimos gráficos nos brinca entradas distintas a la novela. En el primero, queda evidente la diferencia entre personajes con una participación más o menos constante en los capítulos y otros que aparecen de manera más ocasional o intermitente. El segundo, por otro lado, no solo señala los puntos donde cada personaje aparece más o menos de forma muy clara, sino que también permite comparar los capítulos entre sí. Dos ejemplos extremos: el capítulo 3 (introducción de Ana en la novela), en el que solamente Víctor aparece más de lo habitual, y el capítulo 13 (la comida en la casa de los Marqueses de Vegallana), que se puede considerar coral por la diversidad de personajes que entran en escena. Un frenesí en el que todos los grupos superan la media de frecuencia de los demás capítulos de la novela.
 
 
 ### Asociación entre temas (y personajes)
