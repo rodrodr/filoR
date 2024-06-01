@@ -46,7 +46,7 @@
     "href": "index.html#servicio-técnico",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "🤖 Servicio técnico 🤖",
-    "text": "🤖 Servicio técnico 🤖\nPara que podáis reproducir los ejemplos de análisis presentados durante el curso debéis instalar en vuestros ordenadores el R y el RStudio Desktop.\nTambién debéis ejecutar el siguiente código en R que instala los paquetes necesarios:\n\n\nCode\n# Crea un vector con los paquetes a instalar\npc &lt;- c(\"quanteda\",\"quanteda.textplots\",\n        \"quanteda.textmodels\",\"quanteda.textstats\",\n        \"stringi\",\"readr\",\"gutenbergr\",\"ggplot2\",\n        \"ggrepel\",\"reactable\",\"tidyverse\",\"devtools\",\n        \"egg\",\"network\",\"sna\",\"ggnetwork\")\n\n# Instala los paquetes\ninstall.packages(pc)\n\n# Instala el paquete tenet que no está en CRAN\ndevtools::install_github(\"rodrodr/tenet\", force=T)"
+    "text": "🤖 Servicio técnico 🤖\nPara que podáis reproducir los ejemplos de análisis presentados durante el curso debéis instalar en vuestros ordenadores el R y el RStudio Desktop.\nTambién debéis ejecutar el siguiente código en R que instala los paquetes necesarios:\n\n\nCode\n# Crea un vector con los paquetes a instalar\npc &lt;- c(\"quanteda\",\"quanteda.textplots\",\n        \"quanteda.textmodels\",\"quanteda.textstats\",\n        \"stringi\",\"readr\",\"gutenbergr\",\"ggplot2\",\n        \"ggrepel\",\"reactable\",\"tidyverse\",\"devtools\",\n        \"egg\",\"network\",\"sna\",\"ggnetwork\",\"poliscidata\")\n\n# Instala los paquetes\ninstall.packages(pc)\n\n# Instala el paquete tenet que no está en CRAN\ndevtools::install_github(\"rodrodr/tenet\", force=T)"
   },
   {
     "objectID": "prepa.html",
