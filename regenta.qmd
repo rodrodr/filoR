@@ -815,7 +815,7 @@ plotStream(xx,
 
 En este último gráfico queda más clara la evolución de los personajes en la novela y los momentos en los que el autor decide vincularles más o menos en su narrativa. Además, al pasar el cursor sobre un capítulo, podemos ver la frecuencia de aparición de todos y cada uno de los personajes en ese capítulo en concreto.
 
-Otra manera de verlo es por medio de un gráfico de símbolos proporcionales organizados en una grada de N personajes por N capítulos. En este caso, la función `plotGrid` nos permite hacerlo de manera sencilla: 
+Otra manera de verlo es por medio de un gráfico de símbolos proporcionales organizados en una grada de N personajes por N capítulos. En este caso, la función `plotGrid` del paquete `tenet` nos permite hacerlo de manera sencilla: 
 
 ```{r}
 
