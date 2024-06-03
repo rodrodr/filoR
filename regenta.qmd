@@ -196,6 +196,11 @@ El código abajo carga los datos en la memoria, los convierte en un corpus y mue
 ```{r}
 
 # carga los datos de "La Regenta"
+# Aquí buscar los datos en la 
+# carpeta que habéis guardado los 
+# datos al ejecutar los códigos
+# de preparación, algo como
+# "C:/FiloR/Regenta.RData", por ejemplo
 load("../textos/Regenta.RData")
 
 # carga el paquete quanteda para 

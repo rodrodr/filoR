@@ -331,6 +331,10 @@ regp <- dx
 regc <- dc
 
 # Guarda los resultados
+# Elegid una ubicación en vuestro
+# ordenador donde podáis rescatar
+# los datos luego:
+# "C:/FiloR/Regenta.RData", por ejemplo
 save(regp, regc, file="textos/Regenta.RData")
 
 ```
@@ -798,6 +802,11 @@ tsc_rn <- aa
 tsc_rd <- res  
 
 # Guarda los resultados
+# Elegid una ubicación en vuestro
+# ordenador donde podáis rescatar
+# los datos luego:
+# "C:/FiloR/Tres_sombreros_de_copa.RData", 
+# por ejemplo
 save(tsc_d, 
      tsc_rd, 
      tsc_rd, 
