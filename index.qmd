@@ -63,7 +63,18 @@ Las sesiones tendrán lugar en el etéreo espacio de la nube, en la plataforma Z
 
 Para que podáis reproducir los ejemplos de análisis presentados durante el curso debéis instalar en vuestros ordenadores el [R](https://cran.r-project.org/) y el [RStudio Desktop](https://posit.co/downloads/).
 
-También debéis ejecutar el siguiente código en R que instala los paquetes necesarios:
+También debéis ejecutar el siguiente código en R que instala los paquetes necesarios. 
+
+**AVISO IMPORTANTE PARA INICIANTES EN R**
+
+Para que funcione el código abajo:
+
+1. debes ejecutar cada línea de una en una y esperar que finalice antes de ejecutar la siguiente. Primero la que empieza con **pc**, luego, **install.packages(pc)** y, finalmente, una vez terminado el paso anterior: **devtools::install_github("rodrodr/tenet", force=T)**.
+
+2. Puede que aparezcan algunos mensajes. El primero es si quieres reiniciar R, le das a "No". El segundo es si deseas actualizar los paquetes y debes decir: "1 - All". Finalmente, si te pide instalar paquetes "from source" (en Mac puede aparecer), elegid, "n" (no). 
+
+Con eso, tendréis para instalar los paquetes necesarios para el curso.
+
 
 ```{r, eval=F}
 

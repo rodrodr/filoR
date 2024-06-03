@@ -252,7 +252,14 @@ Profesora en el Departamento de Literatura española e hispanoamericana de la US
 <section id="servicio-técnico" class="level2">
 <h2 class="anchored" data-anchor-id="servicio-técnico">🤖 Servicio técnico 🤖</h2>
 <p>Para que podáis reproducir los ejemplos de análisis presentados durante el curso debéis instalar en vuestros ordenadores el <a href="https://cran.r-project.org/">R</a> y el <a href="https://posit.co/downloads/">RStudio Desktop</a>.</p>
-<p>También debéis ejecutar el siguiente código en R que instala los paquetes necesarios:</p>
+<p>También debéis ejecutar el siguiente código en R que instala los paquetes necesarios.</p>
+<p><strong>AVISO IMPORTANTE PARA INICIANTES EN R</strong></p>
+<p>Para que funcione el código abajo:</p>
+<ol type="1">
+<li><p>debes ejecutar cada línea de una en una y esperar que finalice antes de ejecutar la siguiente. Primero la que empieza con <strong>pc</strong>, luego, <strong>install.packages(pc)</strong> y, finalmente, una vez terminado el paso anterior: <strong>devtools::install_github(“rodrodr/tenet”, force=T)</strong>.</p></li>
+<li><p>Puede que aparezcan algunos mensajes. El primero es si quieres reiniciar R, le das a “No”. El segundo es si deseas actualizar los paquetes y debes decir: “1 - All”. Finalmente, si te pide instalar paquetes “from source” (en Mac puede aparecer), elegid, “n” (no).</p></li>
+</ol>
+<p>Con eso, tendréis para instalar los paquetes necesarios para el curso.</p>
 <div class="cell">
 <details open="">
 <summary>Code</summary>
