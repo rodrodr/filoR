@@ -272,6 +272,7 @@ En este caso, hemos considerado palabras aisladas, pero podemos repetir el anál
 
 ```{r}
 
+# Crea bigramas
 bi <- tokens_ngrams(tk, n = 2)
 
 # convierte en una matriz de términos
@@ -280,6 +281,7 @@ dtm <- dfm(bi)
 # muestra los 50 bigramas más frecuentes
 topfeatures(dtm, 50)
 
+# Crea trigramas
 tri <- tokens_ngrams(tk, n = 3)
 
 # convierte en una matriz de términos
@@ -359,7 +361,6 @@ Podemos emplear un tipo de visualización de datos llamado **árbol de palabras*
 ```{r, eval=F}
 
 library(tenet)
-
 
 wordtree(cp, "amor")
 
@@ -560,10 +561,10 @@ dicf <- dictionary(
   list(
     social=c("casino","teatro","espolón",
              "Paseo de Verano","Paseo de los curas",
-             "calle","plaza","tertulia","salon"),
+             "calle","plaza","tertulia","salon","vivero"),
     religioso=c("catedral","capilla","sacristía",
                 "claustro","seminario"),
-    doméstico=c("vivero","\\bcasa\\b","hogar","alcoba",
+    doméstico=c("\\bcasa\\b","hogar","alcoba",
                 "habitación","cama","cocina","despensa")))
 
 # Filtra las palabras clave empleando

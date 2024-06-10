@@ -83,7 +83,9 @@ pc <- c("quanteda","quanteda.textplots",
         "quanteda.textmodels","quanteda.textstats",
         "stringi","readr","gutenbergr","ggplot2",
         "ggrepel","reactable","tidyverse","devtools",
-        "egg","network","sna","ggnetwork","poliscidata")
+        "egg","network","sna","ggnetwork","poliscidata",
+        "udpipe","dplyr","syuzhet","ggiraph","networkD3",
+        "igraph","topicmodels")
 
 # Instala los paquetes
 install.packages(pc)

@@ -1,10 +1,14 @@
 ---
-title: "<b>Tres sombreros de copa</b><br>Análisis de redes de diálogo en R"
+title: "<b>Tres sombreros de copa</b><br>Redes en diálogo"
+bibliography: references.bib
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning=F, error=F}
 
 load("../textos/Tres_sombreros_de_copa.RData")
+
+# articulo interesante
+ur <- "https://noduslabs.com/research/pathways-meaning-circulation-text-network-analysis/"
 
 library(quanteda)
 
@@ -12,18 +16,631 @@ library(quanteda)
 
 ## Introducción
 
-(EN BREVE - PARA SEGUNDA SESIÓN DEL CURSO)
+En este segundo documento, utilizaremos la obra de Miguel Mihura, *Tres sombreros de copa*, ilustrar un conjunto de técnicas de análisis textual distintas de los que hemos examinado con "La Regenta". Nuestro objetivo actual consiste en centrar la atención en las redes de diálogo y de palabras para identificar patrones y temas en la obra.
 
+## Redes de diálogo
 
+Como podéis ver en el apartado de [preparación](prepa.html), hemos estructurado el texto de la obra en una base de datos que contiene los diálogos, el personaje que habla y el receptor del mensaje. A partir de dichas informaciones, podemos emplear técnicas de análisis de redes para identificar patrones de interacción entre los personajes.
 
-## Redes de diálogo 
-
+El código abajo transforma la base de datos en un objeto de red que puede ser visualizado. En este caso, utilizamos la función `simpleNetwork` del paquete `networkD3` para crear una visualización interactiva de la red de diálogos entre los personajes de la obra.
 
 ```{r}
 
 # carga los datos de la obra
 load("../textos/Tres_sombreros_de_copa.RData")
 
+# Carga el paquete
+library(igraph)
+
+# convierte en un objeto de red
+g <- graph_from_data_frame(tsc_rd, 
+                           directed = TRUE)
+
+# Define la frecuencia de interacción
+# como el peso del vínculo entre
+# los dos personajes
+E(g)$weight <- tsc_rd$freq
+
+
+# Crea la visualización de la red
+library(networkD3)
+
+simpleNetwork(tsc_rd, 
+              fontSize = 14, 
+              opacity=1)
+
+```
+
+El sociograma anterior representa de forma esquemática los vínculos entre los personajes. Podemos observar distintos patrones de conexión entre ellos. Algunos solo interactúan con otro, como "El cazador astuto". Otros se destacan por vincularse con muchos, como Fanny. Además, hay aquellos que conectan un grupo de personajes con otro, como Dionisio o Madame Olga. Cuando representamos las interacciones bajo una forma de red, salta a la vista la estructura de la obra. Emergen grupos muy densos, como el representado por Dionisio, Paula, Buby y Fanny, y otros periféricos, como las tres muchachasm el cazador astuto y el anciano militar.
+
+### Protagonismo como atributo de la red
+
+Si os pregunto, ¿cuál es el personaje más importante en la obra? ¿Qué responderíais? Si conocéis bien la obra seguramente elegiríais entre Dionisio y Paula. No obstante, ¿cómo podemos medir el protagonismo de un personaje? Además, ¿a qué tipo de protagonismo nos referimos? ¿Al número de palabras que pronuncia? ¿A la cantidad de personajes con los que interactúa? ¿A la cantidad de veces que es mencionado por otros personajes?
+
+En la teoría de redes, el protagonismo de un nodo puede medirse a través de distintas métricas de centralidad [@wasserman1994]. Dichas técnicas permiten evaluar diferentes formas de influencia que cada personaje ejerce en la red. Por ejemplo, si miramos solo el número de personajes con quien habla cada uno, podríamos decir que Fanny es la más importante. No obstante, si ponderamos todas las formas posibles de interacción, queda clara la centralidad de Dionisio en la obra. El esquema abajo muestra la anatomía de una red social y los elementos estructurales que determinan las métricas de centralidad más comunes.
+
+![](anatomy_social.png)
+
+<br>
+
+Aquí nos concentraremos en siete métricas de centralidad que nos permiten evaluar el protagonismo de los personajes en la red de diálogo. Estas son:
+
+-   **Degree**: mide el número de conexiones que tiene un nodo con otros nodos. Fanny aquí es la reina, puesto que interactúa con ocho personajes distintos.
+
+-   **Closeness**: mide la distancia promedio de un nodo a todos los demás nodos.
+
+-   **Betweenness**: mide la cantidad de veces que un nodo actúa como intermediario en la red. Dionisio, Fanny y Madame Olga son ejemplos en este sentido.
+
+-   **Eigenvector**: mide la importancia de un nodo en función de la importancia de sus vecinos. Si un personaje interactúa con otro que también es importante, su importancia aumenta. Por ejemplo, el grupo formado por Dionisio, Paula, Buby, Fanny y "El odioso señor" revela personajes con un alto valor en esa medida.
+
+-   **PageRank**: se trata de una medida basada en la anterior, pero que considera quién se dirige a quién. Por ejemplo, si una persona sigue a Taylor Swift en Twitter, no significa nada para su visibilidad en las redes. No obstante, si la cantante decide seguir a esta persona, su peso se verá aumentado de forma clara.
+
+-   **Hub**: mide la cantidad de conexiones que tiene un nodo con otros nodos importantes.
+
+-   **Authority**: mide la cantidad de conexiones recibidas de otros nodos de tipo **hub** en la red. Una persona que se dirije a otros nodos influyentes posee un enorme potencial de difusión de su mensaje.
+
+En el código abajo, visualizamos la posición de cada uno de los personajes de la obra según las distintas métricas mencionadas:
+
+```{r, fig.height=8, fig.width=11}
+
+# Carga el paquete tenet
+library(tenet)
+
+# Genera el gráfico de centralidad
+plotNetCentrality(g)
+
+```
+
+Como podemos observar, se confirma el protagonismo de Dionisio y Paula. No obstante, otros personajes también se destacan en distintas métricas. Por ejemplo, Fanny es la que más conexiones tiene y actúa como intermediaria. Como hemos visto, "El odioso señor" por su posición en la red y el contacto con otros persojanes de destaque, se sitúa bien en métricas como autoridad, *eigenvector* y *closeness*.  
+
+### Comunidades de personajes
+
+La estructura de interacción de los personajes también permite la identificar de módulos o grupos de personaje que presentan una mayor densidad de interacciones entre sí que con el resto de la red. En la teoría de redes, estos grupos se conocen como comunidades. En el código abajo, identificamos las comunidades de personajes en *Tres sombreros de copa*:
+
+```{r}
+
+# Identifica las comunidades
+wb <- cluster_walktrap(g)
+
+# Atribuye la membresía 
+# a los personajes
+V(g)$membership <- wb$membership
+
+
+# Prepara la visualización
+dd <- igraph_to_networkD3(g, 
+                          group = V(g)$membership)
+
+# Crea la visualización
+forceNetwork(Links = dd$links,
+             Nodes = dd$nodes, 
+             Source = 'source', 
+             Target = 'target', 
+             NodeID = 'name', 
+             Group = 'group',
+             fontSize = 18,
+             opacity=1, 
+             opacityNoHover = 0.25, 
+             bounded = T)
+
+```
+
+Cada comunidad se representa por un color distinto. El algoritmo ha identificado ocho comunidades distintas. La primera conformada por Dionisio, Pauloa, Buby, El odioso señor, Don Sacramento y Don Rosario. La segunda por Fanny, las tres muchachas y El anciano militar. La tercera por Sagra y El cazador astuto. La cuarta por Madame Olga y El guapo muchacho. La quinta por todos y "El romántico enamorado. La sexta por "Unos" y "Otros". Las dos últimas son comunidades de un solo personaje: El coro de viejos extraños y El explorador.
+
+## Temas y redes
+
+Una vez analizada la conectividad de los personajes, a partir de ahora exploraremos dos métodos de modelado de tópicos. El primero, sin redes, se basa en el modelo LDA (Latent Dirichlet Allocation) para identificar los tópicos más relevantes en el diálogo de la obra. Consiste en agrupar palabras que aparecen juntas en el texto y que, por lo tanto, pueden ser consideradas como parte de un mismo tema. El segundo, a partir de redes, se basa en la extracción de tópicos a partir de la estructura de interacción entre los personajes. Como en el ejemplo de los personajes, se identifican comunidades de palabras que presentan una mayor densidad de interacciones entre sí que con el resto de la red.
+
+
+### Modelado de tópicos sin redes
+
+El LDA corresponde a una técnica de aprendizaje no supervisado (sin la necesidad de una clasificación previa por parte del investigador) que permite identificar los tópicos más relevantes en un conjunto de documentos. A partir de la matriz de términos-documentos, el modelo asigna probabilidades a cada palabra de pertenecer a un tópico. Se llama "latente" justamente porque trata de identificar temas que no están explícitos en el texto. La combinación de palabras sirve de insumo para que el analista pueda inferir de qué trata el tema en concreto.
+
+El código abajo lleva a cabo un análisis LDA para identificar los tópicos más relevantes en los diálogos de *Tres sombreros de copa*:
+
+
+```{r}
+
+# Carga los paquetes
+library(quanteda)
+library(topicmodels)
+
+# Extrae los tokens
+tk <- tokens(tsc_d$dialogo, 
+             remove_punct = TRUE, 
+             remove_numbers = TRUE, 
+             remove_symbols = TRUE)
+
+tk <- tokens_tolower(tk)
+
+tk <- tokens_remove(tk, 
+                    c(stopwords("es"),
+                      "don",
+                      "usted",
+                      "hacer",
+                      "va",
+                      "voy",
+                      "si"))
+
+# Crea la matriz de términos-documentos
+dtm <- dfm(tk)
+
+# Convierte en el formato requerido
+dtm <- convert(dtm, 
+               to = "topicmodels") 
+
+# Crea 20 tópicos
+ld <- LDA(dtm, k = 20)
+
+
+# Obtiene los 50 términos más
+# importantes de cada tópico
+d1 <- terms(ld, 50)
+
+# Visualiza los resultados
+library(reactable)
+
+reactable(d1, resizable=T, sortable = F)
+
+
 ```
 
 
+La tabla presenta los palabras por orden de importancia en cada uno de los 20 tópicos generados automáticamente. Se puede ver que muchas palabras se repitan en varios temas, a menudo con un peso distinto en cada uno de ellos. Por ejemplo, "sombreros" y "Dionisio" aparecen en los dos primeros tópicos, aunque en posiciones distintas. 
+
+La interpretación de los resultados de un modelo LDA es un proceso iterativo y cualitativo. No hay una regla fija para determinar cuántos tópicos son los más adecuados. En este caso, hemos optado por 20 tópicos, pero el investigador puede ajustar este número según sus objetivos de investigación. Además, dar nombre a cada uno de ellos no resulta fácil, pues, como hemos visto, las mismas palabras pueden repetirse, dificultando su asociación con un tema concreto.
+
+### Extracción de tópicos a partir de redes
+
+Otro modo de identificar los temas consiste en crear redes de palabras. En este caso, se considera que dos palabras están conectadas si aparecen juntas en el texto. La red resultante permite identificar comunidades de palabras que presentan una mayor densidad de interacciones entre sí que con el resto de la red. En el código abajo, se extraen los tópicos a partir de la estructura de interacción entre las palabras:
+
+```{r}
+
+# Crea una base de datos
+# que irá acumular las coocurrencias
+res <- data.frame()
+
+# Para cada diálogo
+for(i in 1:length(tk)){
+  
+  # Obtiene las palabras
+  ky <- as.character(tk[[i]])
+  
+  # Si solo hay una palabra
+  # para al siguiente diálogo
+  if(length(ky) < 2){
+    next
+  }
+  
+  # Genera las coocurrencias
+  d1 <- data.frame(from = ky[-length(ky)], to = ky[-1])
+  
+  # Establece el peso
+  d1$weight <- 1
+  
+  # Acumula los resultados
+  res <- rbind(res, d1)
+  
+}
+
+
+# Simplifica la red para obtener
+# la frecuencia única de las coocurrencias
+library(igraph)
+
+
+g <- graph_from_data_frame(res, 
+                           directed = FALSE)
+
+g <- igraph::simplify(g, 
+              remove.multiple = FALSE)
+
+
+# Crea una nueva base de datos
+# con la red simplificada
+rea <- igraph::as_data_frame(g)
+
+# Agrega las coocurrencias por
+# diada de palabras
+ag <- aggregate(weight ~ from + to, 
+                data = rea, 
+                FUN = sum)
+
+
+# Elimina los casos en los que
+# solo hay una coocurrencia
+ag <- ag[ag$weight > 1,]
+
+# convierte en un gráfico no direccional
+g <- graph_from_data_frame(ag, 
+                           directed = FALSE)
+
+# Establece la frecuencia como
+# el peso
+E(g)$weight <- ag$weight
+
+
+```
+
+Hemos greado una red `g` no dirigida (que no considera el orden) a partir de las coocurrencias de palabras en los diálogos. Contiene 595 pares de palabras únicos que se han mencionado juntas en más de una ocasión. A continuación, calcularemos las centralidades `betwenness` y `degree` para identificar las palabras más importantes en la red y permitir que filtremos los resultados para facilitar su visualización:
+
+```{r}
+
+# Calcula las centralidades de red
+# betweenness y degree
+bt <- round(betweenness(g),3)
+
+d1 <- data.frame(word=names(bt), 
+                 betweenness=round(bt))
+
+bt <- degree(g)
+
+d2 <- data.frame(word=names(bt), 
+                 degree=bt)
+
+d3 <- merge(d2, d1, by="word")
+
+
+d3 <- d3[order(d3$betweenness, 
+               decreasing = T),]
+
+library(reactable)
+
+reactable(d3, resizable=T)
+
+
+```
+
+El paso siguiente consiste en crear comunidades de palabras según su posición en la red. Para ello, eliminaremos las palabras con *betweenness* igual a cero. Luego, utilizaremos el algoritmo de Louvain, para identificar las comunidades existentes en la red. Finalmente, convertimos los resultados en una base de datos que nos posibilita identificar las palabras más importantes en cada comunidad:
+
+```{r}
+
+# Para facilitar la visualización,
+# se eliminan las palabras con 
+# un grado menor a 1 en la estadística
+# betweenness
+
+li <- d3$word[d3$betweenness < 1]
+ga <- g - li
+
+
+# Crea un cluster de palabras
+# según la conectividad de red
+wc <- cluster_louvain(ga)
+
+# Atribuye la membresía a los 
+# grupos
+V(ga)$membership <- wc$membership
+
+
+# Fusiona los datos de membresía
+# a cada cluster con los datos
+# de las palabras
+da <- igraph::as_data_frame(ga, 
+                            what = "vertices")
+
+
+names(da)[1] <- "word"
+
+d3 <- merge(d3, da, by="word")
+
+# Seleccion las 20 palabras
+# con más peso en cada grupo
+library(dplyr)
+
+zz <- d3 |> 
+      arrange(desc(betweenness)) |>
+      group_by(membership) |>
+      slice(1:20) 
+
+
+reactable(zz, resizable=T)
+
+```
+
+<br>
+
+Finalmente, visualizamos los resultados en una red de palabras. En ella, los nodos representan las palabras y los enlaces las coocurrencias entre ellas. Los colores de los nodos indican la comunidad a la que pertenecen, mientras que el tamaño de los nodos refleja su importancia en la red:
+
+```{r}
+
+# Crea un gráfico de red
+# para los clusters
+cpo <- igraph::components(ga)
+ncomp <- which(cpo$csize > 5)
+ga <- igraph::delete_vertices(ga, 
+                              ! cpo$membership %in% ncomp)
+
+
+library(networkD3)
+
+dd <- igraph_to_networkD3(ga, 
+                          group = V(ga)$membership)
+
+forceNetwork(Links = dd$links, 
+             width = 600, 
+             height = 800, 
+             bounded = T,
+             linkDistance = 50, 
+             charge=-20,
+             opacity=1,
+             opacityNoHover=0.3,
+             Nodes = dd$nodes, 
+             Source = 'source', 
+             Target = 'target', 
+             NodeID = 'name', 
+             Group = 'group',
+             fontSize = 20)
+
+
+```
+
+<br>
+
+Al analizar los resultados en la tabla y el gráfico, resulta más sencillo identificar los temas a que pertenecen cada grupo de palabras. No solo eso, también se evidencian las conexiones entre distintos temas. El primero tiene que ver con Dionisio y su habitación. El segundo trata de objetos centrales como los sombreros de copa, las lucecitas en el puerto, los malabares o las farolas. Los `clusters` cinco y siete tratan, entre otras cosas, del diálogo entre Paula y El odioso señor. El número 8 trata del niño que se ha ahogado y de la novia de Dionisio, llamada "niña" por Don Sacramento, su padre.  
+
+
+```{r, echo=FALSE}
+
+ag <- aggregate(dialogo ~ personaje_A, 
+                data = tsc_d, 
+                FUN = paste,
+                collapse = "\n")
+
+
+nn <- unique(zz$membership)
+
+nn <- which(table(zz$membership)>5)
+nn <- as.numeric(nn)
+
+li <- list()
+
+for(i in 1:length(nn)){
+  
+  if(nchar(nn[i])==1){
+    ze <- "0"
+  }else{
+    ze <- ""
+  } 
+  
+  nm <- paste0("Tópico ",ze, nn[i])
+  
+
+  li[[i]] <- paste0("\\b",as.character(zz$word[zz$membership == nn[i]]), "\\b")
+
+  names(li)[[i]] <- nm
+  
+}
+
+
+dic <- dictionary(li)
+
+cp <- corpus(ag, text_field = "dialogo", docid_field = "personaje_A")
+
+docvars(cp, "personaje_A") <- ag$personaje_A 
+
+# Filtra las palabras clave empleando
+# el nuevo diccionario
+
+ft <- countKeywords(cp, quietly = T,
+                    dic, 
+                    group.var = "personaje_A", 
+                    rel.freq = T)
+
+
+
+ft <- ft[ft$frequency > 0,]
+
+ft <- ft[ft$keyword!="da",]
+
+ft <- ft[!ft$groups %in%c("CORO DE VIEJOS EXTRAÑOS","OTROS","LAS TRES","TODOS","UNOS"),]
+
+
+a1 <- aggregate(frequency ~ groups+level1, 
+                data = ft, 
+                FUN = sum)
+
+
+
+a1 <- a1[a1$groups!="Introducción",]
+
+a2 <- aggregate(frequency ~ level1, 
+                data = a1, 
+                FUN = sum)
+
+names(a2) <- c("level1", "tot_freq")
+
+a1 <- merge(a1, a2, by = "level1")
+
+a1$per_topic <- round(a1$frequency/a1$tot_freq*100, 1)
+
+a1$freq_mil <- round(a1$frequency*1000, 1)
+
+library(stringi)
+library(ggplot2)
+
+a1$groups <- stri_trans_totitle(a1$groups)
+
+p <- plotGrid(a1, standardize = F,axis = "x",
+         palette = pal$cat.ggsci.d3_category_a.20,
+         x="groups", 
+         y="level1", 
+         size="freq_mil", 
+         color="groups", 
+         width_svg = 9, height_svg = 10, 
+         leg.size="Frecuencia\n(por mil)", 
+         leg.color="Personaje",
+         grid.color="grey99", interactive = F)
+
+p <- p + labs(title="Tres sombreros de copa",
+              subtitle="Términos de cada tópico por cada mil palabras.")+
+         theme(plot.title.position = "plot", title=element_text(size=20))
+
+library(ggiraph)
+girafe(ggobj = p, width = 9, height = 9)
+
+
+```
+
+
+
+## Etiquetado léxico
+
+Podemos ir un paso más allá en la identificación de tópicos con la ayuda del etiquetado de partes del discurso (POS Tagging, en su sigla en inglés). Se trata de un proceso que consiste en asignar a cada palabra de un texto una etiqueta que indica su categoría gramatical. Para ello, emplearemos el paquete `udpipe` y el modelo previamente entrenado en español para identificar las palabras de cada diálogo. Una vez etiquetadas, seleccionaremos solamente los sustantivos y adjetivos. Con esta información, tendremos más insumos para enriquecer nuestra comprensión de los tópicos presentes en la obra.
+
+El código abajo lleva a cabo dicho proceso y nos enseña los resultados:
+
+```{r}
+
+# Crea una variable de identificación
+tsc_d$id <- 1:nrow(tsc_d)
+
+# Convierte en corpus el dataframe sin
+# los textos de introducción
+cs <- corpus(tsc_d[tsc_d$personaje_A!="Introducción",], 
+             text_field = "dialogo",
+             docid_field = "id")
+
+# Abre el paquete udpipe para realizar 
+# el etiquetado de los textos
+library(udpipe)
+
+# Descarga el modelo previamente entrenado
+# (solo es necesario hacerlo una vez)
+m_es   <- udpipe_download_model(language = "spanish")
+
+# Carga el modelo
+m_es <- udpipe_load_model(m_es)
+
+# Genera las anotaciones y etiquetas
+d <- udpipe_annotate(m_es, 
+                     x=cs, 
+                     doc_id = docnames(cs)) |> 
+  as.data.frame() |> 
+  dplyr::select(-sentence)
+
+
+# Selecciona solo los sustantivos y adjetivos
+d <- d[d$upos%in%c("NOUN","ADJ"),]
+
+
+# Añade los personajes
+d <- merge(d, 
+           tsc_d[,c("id","personaje_A")], 
+           by.x = "doc_id", 
+           by.y="id")
+
+
+# Filtra los campos deseados
+d <- d[,c("personaje_A","lemma")]
+
+# Uniformiza y agrega las frecuencias
+d <- d[tolower(d$lemma)!="dionisio",]
+d$freq <- 1
+
+ag <- aggregate(freq ~ personaje_A+lemma, 
+                data = d, 
+                FUN = sum)
+
+# Selecciona solamente los términos
+# que aparezcan más de una vez
+ag <- ag[ag$freq>1,]
+
+# Ordena por personaje y frecuencia
+# decreciente
+ag <- ag[order(ag$personaje_A, -ag$freq),]
+
+# Visualiza los resultados
+reactable(ag, resizable = T, sortable=T)
+
+
+```
+
+
+## Análisis de sentimiento
+
+El análisis de sentimiento será la última técnica considerada en este curso. Se trata de un proceso que busca identificar y cuantificar la actitud expresada en un texto. Existen diversas maneras de llevar a cabo este análisis, pero una de las más comunes es la de emplear diccionarios de palabras previamente etiquetadas como positivas, negativas o neutras.
+
+En el ejemplo abajo, hemos realizado la clasificación manual de cada diálogo como positivo, negativo o neutro. El paso siguiente ha sido emplear el paquete `syuzhet` para analizar los diálogos de la obra y determinar su "valencia". Finalmente, agregamos la información por personaje para saber su polaridad emocional. El código abajo lleva a cabo dicho proceso y nos enseña los resultados:
+
+```{r}
+
+# Diálogos positivos
+pos <- c(4,5,12,19,32,58,60,67,68,70,71,74,76,77,78,80,92,
+         98,111,172,229,230,235,236,260,264,269,306,309,
+         321,345,351,356,357,359,365,385,389,406,415,424,
+         428,432,436,438,447,448,449,464,472,474,482,485,
+         486,487,490,491,494,496,500,515,518,519,521,528,
+         533,538,577,617,621,627,629,648,653,716,741,757,
+         769,770,811,834)
+
+# Diálogos negativos
+neg <- c(7,17,22,47,49,53,61,63,64,72,96,108,112,113,120,
+         121,122,123,141,145,149,147,171,175,176,177,179,
+         181,185,187,188,190,203,204,205,220,254,258,259,
+         261,262,263,267,282,284,285,286,289,290,291,292,
+         311,312,314,322,326,334,370,375,376,396,405,418,
+         457,458,459,461,471,473,476,481,513,544,546,547,
+         549,551,552,553,555,567,575,584,585,587,588:596,
+         598,599,602,608,609,619,647,671,672,673,679,680,
+         681,683,684,685,687,688,693,697,715,725,737,751,
+         752,774,776,778,791,800,802,803,820,821,831,837)
+
+# Identifica las valencias
+tsc_d$valence <- 0
+tsc_d$valence[pos] <- 1
+tsc_d$valence[neg] <- -1
+
+# Agrega la información por personaje
+ag1 <- aggregate(valence ~ personaje_A, 
+                 data = tsc_d, 
+                 FUN = sum)
+
+# Carga el paquete syuzhet
+library(syuzhet)
+
+# Obtiene las emociones
+emo <- get_nrc_sentiment(tsc_d$dialogo, 
+                         language = "spanish")
+emo$negative <- emo$negative * -1
+
+# Crea una variable de valencia neta
+# entre emociones positivas y negativas
+emo$emo <- emo$positive + emo$negative
+
+# Estandariza la variable para 
+# 1 positivo, 0 neutro y -1 negativo
+emo$emo2 <- ifelse(emo$emo == 0, 0, 
+                   ifelse(emo$emo > 0, 1, 
+                          -1))
+
+# Agrega la información por personaje
+emo$person <- tsc_d$personaje_A
+tsc_d$emo <- emo$emo2
+ag2 <- aggregate(emo ~ personaje_A,
+                 data = tsc_d, 
+                 FUN = sum)
+
+# Fusiona las dos tablas para 
+# comparar la valencia manual y
+# la automática por diccionario
+agg <- merge(ag1, ag2, by="personaje_A")
+
+# Nombre las variables para facilitar
+# la lectura
+names(agg) <- c("Personaje", 
+                "Manual",
+                "Diccionario")
+
+# Visualiza los resultados
+reactable(agg, 
+          resizable = T, 
+          sortable=T)
+
+```
+
+<br>
+
+Como vemos, los resultados no son muy animadores. La codificación manual ha arrojado resultados muy distintos a la automática por medio de diccionario, especialmente para personajes centrales como Dionisio y Paula. En parte esto ocurre porque se trata de un texto humorístico y sarcástico, lo que dificulta la clasificación de los diálogos en positivos o negativos. Pero una gran parte de la diferencia viene de la interpretación de respuestas negativas -como "No, no lo puedo.", por ejemplo- como conteniendo carga negativa desde la perspectiva emocional o -"¿Y cuánto dinero llevaba usted en la cartera?", como positiva. 
+
+Quizás la mejor manera de abordar este problema sea la de emplear un enfoque mixto, que combine la codificación manual con la automática, por medio de un modelo de aprendizaje automático, para obtener una visión más completa de la valencia emocional de los personajes.
