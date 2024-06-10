@@ -273,7 +273,7 @@ bt <- round(betweenness(g),3)
 d1 <- data.frame(word=names(bt), 
                  betweenness=round(bt))
 
-bt <- degree(g)
+bt <- igraph::degree(g)
 
 d2 <- data.frame(word=names(bt), 
                  degree=bt)
@@ -394,6 +394,7 @@ nn <- which(table(zz$membership)>5)
 nn <- as.numeric(nn)
 
 li <- list()
+dt <- data.frame()
 
 for(i in 1:length(nn)){
   
@@ -409,6 +410,12 @@ for(i in 1:length(nn)){
   li[[i]] <- paste0("\\b",as.character(zz$word[zz$membership == nn[i]]), "\\b")
 
   names(li)[[i]] <- nm
+  
+  tt <- as.character(zz$word[zz$membership == nn[i]])[1:15]
+  tt <- tt[! is.na(tt)]
+  tm <- paste(tt, collapse=", ")
+  
+  dt <- rbind(dt, data.frame(level1=nm, terms=tm))
   
 }
 
@@ -461,6 +468,24 @@ library(ggplot2)
 
 a1$groups <- stri_trans_totitle(a1$groups)
 
+a1 <- merge(a1, dt, by="level1")
+
+a1$terms <- trimws(a1$terms)
+
+
+for(i in 1:nrow(a1)){
+  
+  nn <- max(nchar(a1$terms))-nchar(a1$terms[i])
+  
+  if(nn>0){
+    
+    a1$terms[i] <- paste0(a1$terms[i], paste0(rep(" ",nn), collapse = ""))
+  }
+  
+}
+
+
+
 p <- plotGrid(a1, standardize = F,axis = "x",
          palette = pal$cat.ggsci.d3_category_a.20,
          x="groups", 
@@ -473,11 +498,15 @@ p <- plotGrid(a1, standardize = F,axis = "x",
          grid.color="grey99", interactive = F)
 
 p <- p + labs(title="Tres sombreros de copa",
-              subtitle="Términos de cada tópico por cada mil palabras.")+
+              subtitle="Principales términos de cada tópico por cada mil palabras.")+
          theme(plot.title.position = "plot", title=element_text(size=20))
 
+p <- p + geom_text(aes(y=level1, label=terms), x=-1.5, color="grey70", size=3, hjust=0, vjust=3.5)
+
+p <- p + coord_cartesian(clip = 'off')
+              
 library(ggiraph)
-girafe(ggobj = p, width = 9, height = 9)
+girafe(ggobj = p, width = 9, height = 10)
 
 
 ```
