@@ -411,7 +411,7 @@ for(i in 1:length(nn)){
 
   names(li)[[i]] <- nm
   
-  tt <- as.character(zz$word[zz$membership == nn[i]])[1:15]
+  tt <- as.character(zz$word[zz$membership == nn[i]])[1:10]
   tt <- tt[! is.na(tt)]
   tm <- paste(tt, collapse=", ")
   
@@ -501,7 +501,14 @@ p <- p + labs(title="Tres sombreros de copa",
               subtitle="Principales términos de cada tópico por cada mil palabras.")+
          theme(plot.title.position = "plot", title=element_text(size=20))
 
-p <- p + geom_text(aes(y=level1, label=terms), x=-1.5, color="grey70", size=3, hjust=0, vjust=3.5)
+p <- p + geom_text(aes(y=level1, 
+                       label=terms), 
+                   x=-1.5, 
+                   color="#284283", # grey70 
+                   size=3.8, # 3
+                   hjust=0, 
+                   vjust=2, # 3.5
+                   family="Homemade Apple") # Mr Bedfort
 
 p <- p + coord_cartesian(clip = 'off')
               
