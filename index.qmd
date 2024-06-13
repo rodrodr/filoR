@@ -62,9 +62,9 @@ Las sesiones tendrán lugar en el etéreo espacio de la nube, en la plataforma Z
 
 ## Ejercicio final
 
-El ejercicio final consistirá en reproducir uno de los análisis presentados durante el curso. Para ello, debéis instalar el R y el RStudio y los paquetes mencionados en la próxima sesión, copiar, pegar y ejecutar el código contenido en las páginas  [Preparación](prepa.html){target=_blank} y [La Regenta](regenta.html){target=_blank}.
+El ejercicio final consistirá en reproducir uno de los análisis presentados durante el curso. Para ello, debéis instalar el R y el RStudio y los paquetes mencionados en la sesión **Servicio técnico** y, a continuación, copiar, pegar y ejecutar el código contenido en las páginas [Preparación](prepa.html){target=_blank} y [La Regenta](regenta.html){target=_blank}.
 
-Se trata de la entrega de una captura de pantalla que demuestre la reproducción exitosa de alguno de los ejercicios propuestos de "La Regenta". Cualquiera de ellos resulta válido.
+Se trata de la entrega de una **captura de pantalla** que demuestre la reproducción exitosa de alguno de los ejercicios propuestos en el apartado sobre "La Regenta". Cualquiera de ellos resulta válido.
 
 
 La fecha final para el envío será el [<b>20/06/2024</b>]{style="background-color:firebrick;color:white;padding:4px;"} vía [correo electrónico]{style="background-color:orange;color:white;padding:4px;"} a los profesores.
