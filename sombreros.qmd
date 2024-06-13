@@ -224,6 +224,10 @@ for(i in 1:length(tk)){
 }
 
 
+# res <- res[! res$from%in%c("dionisio","buby","paula"),]
+# 
+# res <- res[! res$to%in%c("dionisio","buby","paula"),]
+
 # Simplifica la red para obtener
 # la frecuencia única de las coocurrencias
 library(igraph)
@@ -347,7 +351,8 @@ Finalmente, visualizamos los resultados en una red de palabras. En ella, los nod
 # Crea un gráfico de red
 # para los clusters
 cpo <- igraph::components(ga)
-ncomp <- which(cpo$csize > 5)
+nclu <- 5
+ncomp <- which(cpo$csize > nclu)
 ga <- igraph::delete_vertices(ga, 
                               ! cpo$membership %in% ncomp)
 
@@ -390,7 +395,7 @@ ag <- aggregate(dialogo ~ personaje_A,
 
 nn <- unique(zz$membership)
 
-nn <- which(table(zz$membership)>5)
+nn <- which(table(zz$membership)>nclu)
 nn <- as.numeric(nn)
 
 li <- list()
@@ -485,7 +490,7 @@ for(i in 1:nrow(a1)){
 }
 
 
-
+# Crea el gráfico básico
 p <- plotGrid(a1, standardize = F,axis = "x",
          palette = pal$cat.ggsci.d3_category_a.20,
          x="groups", 
@@ -497,10 +502,12 @@ p <- plotGrid(a1, standardize = F,axis = "x",
          leg.color="Personaje",
          grid.color="grey99", interactive = F)
 
+# Añade títulos
 p <- p + labs(title="Tres sombreros de copa",
               subtitle="Principales términos de cada tópico por cada mil palabras.")+
          theme(plot.title.position = "plot", title=element_text(size=20))
 
+# Añade el texto de la lista de palabras
 p <- p + geom_text(aes(y=level1, 
                        label=terms), 
                    x=-1.5, 
@@ -508,10 +515,12 @@ p <- p + geom_text(aes(y=level1,
                    size=3.8, # 3
                    hjust=0, 
                    vjust=2, # 3.5
-                   family="Homemade Apple") # Mr Bedfort
+                   family="Homemade Apple") # Homemade Apple
 
+# Evita que se corten las etiquetas
 p <- p + coord_cartesian(clip = 'off')
-              
+
+# Visualiza el gráfico interactivo              
 library(ggiraph)
 girafe(ggobj = p, width = 9, height = 10)
 

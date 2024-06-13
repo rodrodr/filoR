@@ -59,6 +59,18 @@ Las sesiones tendrán lugar en el etéreo espacio de la nube, en la plataforma Z
 
 [DÍA 2 - 13/05/2024]{style="background-color:seagreen;color:white;padding:4px; "} de 10 a 14h
 
+
+## Ejercicio final
+
+El ejercicio final consistirá en reproducir uno de los análisis presentados durante el curso. Para ello, debéis instalar el R y el RStudio y los paquetes mencionados en la próxima sesión, copiar, pegar y ejecutar el código contenido en las páginas  [Preparación](prepa.html){target=_blank} y [La Regenta](regenta.html){target=_blank}.
+
+Se trata de la entrega de una captura de pantalla que demuestre la reproducción exitosa de alguno de los ejercicios propuestos de "La Regenta". Cualquiera de ellos resulta válido.
+
+
+La fecha final para el envío será el [<b>20/06/2024</b>]{style="background-color:firebrick;color:white;padding:4px;"} vía [correo electrónico]{style="background-color:orange;color:white;padding:4px;"} a los profesores.
+
+
+
 ## `r knitr::asis_output("\U1F916")` Servicio técnico `r knitr::asis_output("\U1F916")`
 
 Para que podáis reproducir los ejemplos de análisis presentados durante el curso debéis instalar en vuestros ordenadores el [R](https://cran.r-project.org/) y el [RStudio Desktop](https://posit.co/downloads/).
