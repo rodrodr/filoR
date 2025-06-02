@@ -55,9 +55,9 @@ Durante el curso se abordarán los siguientes temas:
 
 Las sesiones tendrán lugar en el etéreo espacio de la nube, en la plataforma Zoom. Los enlaces de acceso a las sesiones se enviarán a los correos electrónicos de los participantes.
 
-[DÍA 1 - 04/05/2024]{style="background-color:darkviolet;color:white;padding:4px;"} de 10 a 14h
+[DÍA 1 - 16/06/2025]{style="background-color:darkviolet;color:white;padding:4px;"} de 10 a 14h
 
-[DÍA 2 - 13/05/2024]{style="background-color:seagreen;color:white;padding:4px; "} de 10 a 14h
+[DÍA 2 - 23/06/2025]{style="background-color:seagreen;color:white;padding:4px; "} de 10 a 14h
 
 
 ## Ejercicio final
@@ -67,7 +67,7 @@ El ejercicio final consistirá en reproducir uno de los análisis presentados du
 Se trata de la entrega de una **captura de pantalla** que demuestre la reproducción exitosa de alguno de los ejercicios propuestos en el apartado sobre "La Regenta". Cualquiera de ellos resulta válido.
 
 
-La fecha final para el envío será el [<b>20/06/2024</b>]{style="background-color:firebrick;color:white;padding:4px;"} vía [correo electrónico]{style="background-color:orange;color:white;padding:4px;"} a los profesores.
+La fecha final para el envío será el [<b>30/06/2025</b>]{style="background-color:firebrick;color:white;padding:4px;"} vía [correo electrónico]{style="background-color:orange;color:white;padding:4px;"} a los profesores.
 
 
 
@@ -91,7 +91,7 @@ Con eso, tendréis para instalar los paquetes necesarios para el curso.
 ```{r, eval=F}
 
 # Crea un vector con los paquetes a instalar
-pc <- c("quanteda","quanteda.textplots",
+pc <- c("quanteda","quanteda.textplots","pdftools",
         "quanteda.textmodels","quanteda.textstats",
         "stringi","readr","gutenbergr","ggplot2",
         "ggrepel","reactable","tidyverse","devtools",

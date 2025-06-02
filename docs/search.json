@@ -11,42 +11,60 @@
     "href": "index.html",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "",
-    "text": "Esta página web forma parte del curso “Análisis de textos literarios con R”. En ella, se recogen los materiales y ejemplos que se desarrollarán durante las sesiones."
+    "text": "Esta página web forma parte del curso “Análisis de textos literarios con R”. En ella, se recogen los materiales y ejemplos que se desarrollarán durante las sesiones.",
+    "crumbs": [
+      "Introducción al curso"
+    ]
   },
   {
     "objectID": "index.html#el-curso",
     "href": "index.html#el-curso",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "",
-    "text": "Esta página web forma parte del curso “Análisis de textos literarios con R”. En ella, se recogen los materiales y ejemplos que se desarrollarán durante las sesiones."
+    "text": "Esta página web forma parte del curso “Análisis de textos literarios con R”. En ella, se recogen los materiales y ejemplos que se desarrollarán durante las sesiones.",
+    "crumbs": [
+      "Introducción al curso"
+    ]
   },
   {
     "objectID": "index.html#los-profesores",
     "href": "index.html#los-profesores",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "Los profesores",
-    "text": "Los profesores\n\n\n\n\n\n\n\nRodrigo Rodrigues-Silveira\nrodrodr@usal.es\nProfesor de ciencia política de la USAL. Director del proyecto “Comportamiento legislativo y erosión democrática en América Latina” (PELA Comportamiento). Miembro de los GIR “Política Comparada en América Latina” y “Tecnología y poder en el pensamiento y las letras”.\n\n\n\n\n\n\n\n\n\n\n\n\nSheila Pastor\nsheilap@usal.es\nProfesora en el Departamento de Literatura española e hispanoamericana de la USAL. Miembro del Instituto de Estudios Medievales y Renacentistas y de Humanidades Digitales y del GIR Tecnología y poder en el pensamiento y las letras."
+    "text": "Los profesores\n\n\n\n\n\n\nRodrigo Rodrigues-Silveira\nrodrodr@usal.es\nProfesor de ciencia política de la USAL. Director del proyecto “Comportamiento legislativo y erosión democrática en América Latina” (PELA Comportamiento). Miembro de los GIR “Política Comparada en América Latina” y “Tecnología y poder en el pensamiento y las letras”.\n\n\n\n\n\n\n\n\n\n\n\n\nSheila Pastor\nsheilap@usal.es\nProfesora en el Departamento de Literatura española e hispanoamericana de la USAL. Miembro del Instituto de Estudios Medievales y Renacentistas y de Humanidades Digitales y del GIR Tecnología y poder en el pensamiento y las letras.",
+    "crumbs": [
+      "Introducción al curso"
+    ]
   },
   {
     "objectID": "index.html#el-contenido",
     "href": "index.html#el-contenido",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "El contenido",
-    "text": "El contenido\nDurante el curso se abordarán los siguientes temas:\n\npreparación de textos literarios para análisis cuantitativos\nanálisis de frecuencias de palabras\ncodificación temática\nanálisis de conglomerados clusters\nescalonado de textos (uni y multidimensional)\nmodelado de tópicos\nanálisis de redes sociales\ntécnicas de visualización de texto"
+    "text": "El contenido\nDurante el curso se abordarán los siguientes temas:\n\npreparación de textos literarios para análisis cuantitativos\nanálisis de frecuencias de palabras\ncodificación temática\nanálisis de conglomerados clusters\nescalonado de textos (uni y multidimensional)\nmodelado de tópicos\nanálisis de redes sociales\ntécnicas de visualización de texto",
+    "crumbs": [
+      "Introducción al curso"
+    ]
   },
   {
     "objectID": "index.html#sesiones",
     "href": "index.html#sesiones",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "Sesiones",
-    "text": "Sesiones\nLas sesiones tendrán lugar en el etéreo espacio de la nube, en la plataforma Zoom. Los enlaces de acceso a las sesiones se enviarán a los correos electrónicos de los participantes.\nDÍA 1 - 04/05/2024 de 10 a 14h\nDÍA 2 - 13/05/2024 de 10 a 14h"
+    "text": "Sesiones\nLas sesiones tendrán lugar en el etéreo espacio de la nube, en la plataforma Zoom. Los enlaces de acceso a las sesiones se enviarán a los correos electrónicos de los participantes.\nDÍA 1 - 16/06/2025 de 10 a 14h\nDÍA 2 - 23/06/2025 de 10 a 14h",
+    "crumbs": [
+      "Introducción al curso"
+    ]
   },
   {
     "objectID": "index.html#servicio-técnico",
     "href": "index.html#servicio-técnico",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "🤖 Servicio técnico 🤖",
-    "text": "🤖 Servicio técnico 🤖\nPara que podáis reproducir los ejemplos de análisis presentados durante el curso debéis instalar en vuestros ordenadores el R y el RStudio Desktop.\nTambién debéis ejecutar el siguiente código en R que instala los paquetes necesarios.\nAVISO IMPORTANTE PARA INICIANTES EN R\nPara que funcione el código abajo:\n\ndebes ejecutar cada línea de una en una y esperar que finalice antes de ejecutar la siguiente. Primero la que empieza con pc, luego, install.packages(pc) y, finalmente, una vez terminado el paso anterior: devtools::install_github(“rodrodr/tenet”, force=T).\nPuede que aparezcan algunos mensajes. El primero es si quieres reiniciar R, le das a “No”. El segundo es si deseas actualizar los paquetes y debes decir: “1 - All”. Finalmente, si te pide instalar paquetes “from source” (en Mac puede aparecer), elegid, “n” (no).\n\nCon eso, tendréis para instalar los paquetes necesarios para el curso.\n\n\nCódigo\n# Crea un vector con los paquetes a instalar\npc &lt;- c(\"quanteda\",\"quanteda.textplots\",\n        \"quanteda.textmodels\",\"quanteda.textstats\",\n        \"stringi\",\"readr\",\"gutenbergr\",\"ggplot2\",\n        \"ggrepel\",\"reactable\",\"tidyverse\",\"devtools\",\n        \"egg\",\"network\",\"sna\",\"ggnetwork\",\"poliscidata\",\n        \"udpipe\",\"dplyr\",\"syuzhet\",\"ggiraph\",\"networkD3\",\n        \"igraph\",\"topicmodels\")\n\n# Instala los paquetes\ninstall.packages(pc)\n\n# Instala el paquete tenet que no está en CRAN\ndevtools::install_github(\"rodrodr/tenet\", force=T)"
+    "text": "🤖 Servicio técnico 🤖\nPara que podáis reproducir los ejemplos de análisis presentados durante el curso debéis instalar en vuestros ordenadores el R y el RStudio Desktop.\nTambién debéis ejecutar el siguiente código en R que instala los paquetes necesarios.\nAVISO IMPORTANTE PARA INICIANTES EN R\nPara que funcione el código abajo:\n\ndebes ejecutar cada línea de una en una y esperar que finalice antes de ejecutar la siguiente. Primero la que empieza con pc, luego, install.packages(pc) y, finalmente, una vez terminado el paso anterior: devtools::install_github(“rodrodr/tenet”, force=T).\nPuede que aparezcan algunos mensajes. El primero es si quieres reiniciar R, le das a “No”. El segundo es si deseas actualizar los paquetes y debes decir: “1 - All”. Finalmente, si te pide instalar paquetes “from source” (en Mac puede aparecer), elegid, “n” (no).\n\nCon eso, tendréis para instalar los paquetes necesarios para el curso.\n\n\nCódigo\n# Crea un vector con los paquetes a instalar\npc &lt;- c(\"quanteda\",\"quanteda.textplots\",\"pdftools\",\n        \"quanteda.textmodels\",\"quanteda.textstats\",\n        \"stringi\",\"readr\",\"gutenbergr\",\"ggplot2\",\n        \"ggrepel\",\"reactable\",\"tidyverse\",\"devtools\",\n        \"egg\",\"network\",\"sna\",\"ggnetwork\",\"poliscidata\",\n        \"udpipe\",\"dplyr\",\"syuzhet\",\"ggiraph\",\"networkD3\",\n        \"igraph\",\"topicmodels\")\n\n# Instala los paquetes\ninstall.packages(pc)\n\n# Instala el paquete tenet que no está en CRAN\ndevtools::install_github(\"rodrodr/tenet\", force=T)",
+    "crumbs": [
+      "Introducción al curso"
+    ]
   },
   {
     "objectID": "prepa.html",
@@ -165,6 +183,9 @@
     "href": "index.html#ejercicio-final",
     "title": "filoRAnálisis de textos literarios con R",
     "section": "Ejercicio final",
-    "text": "Ejercicio final\nEl ejercicio final consistirá en reproducir uno de los análisis presentados durante el curso. Para ello, debéis instalar el R y el RStudio y los paquetes mencionados en la sesión Servicio técnico y, a continuación, copiar, pegar y ejecutar el código contenido en las páginas Preparación y La Regenta.\nSe trata de la entrega de una captura de pantalla que demuestre la reproducción exitosa de alguno de los ejercicios propuestos en el apartado sobre “La Regenta”. Cualquiera de ellos resulta válido.\nLa fecha final para el envío será el 20/06/2024 vía correo electrónico a los profesores."
+    "text": "Ejercicio final\nEl ejercicio final consistirá en reproducir uno de los análisis presentados durante el curso. Para ello, debéis instalar el R y el RStudio y los paquetes mencionados en la sesión Servicio técnico y, a continuación, copiar, pegar y ejecutar el código contenido en las páginas Preparación y La Regenta.\nSe trata de la entrega de una captura de pantalla que demuestre la reproducción exitosa de alguno de los ejercicios propuestos en el apartado sobre “La Regenta”. Cualquiera de ellos resulta válido.\nLa fecha final para el envío será el 30/06/2025 vía correo electrónico a los profesores.",
+    "crumbs": [
+      "Introducción al curso"
+    ]
   }
 ]
