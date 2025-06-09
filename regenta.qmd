@@ -528,7 +528,25 @@ dicf <- dictionary(
     espacio=c("casino","catedral","vivero",
               "casa","espolón","teatro",
               "calle","plaza","Paseo de Verano",
-              "salón","tertulia"),
+              "salón","tertulia")
+))
+
+# Crea el gráfico de dispersión
+# léxica
+plotLexDiv(cp, 
+           dicf, 
+           title ='La Regenta', 
+           subtitle = "Espacio en la novela", 
+           palette = pal$cat.brewer.Dark2.8[1])
+```
+
+
+```{r, warning=F, message=F, error=F, fig.width=10, fig.height=8}
+
+# Crea un diccionario solo
+# con dos temas: espacio y tiempo
+dicf <- dictionary(
+  list(
     tiempo=c("otoño","verano","invierno","primavera",
              "semana santa","navidad","\\bdía\\b","noche",
              "tarde","la mañana","madrugada")
@@ -539,9 +557,10 @@ dicf <- dictionary(
 plotLexDiv(cp, 
            dicf, 
            title ='La Regenta', 
-           subtitle = "Espacio y tiempo en la novela", 
-           palette = pal$cat.brewer.Dark2.8[c(1:4)])
+           subtitle = "Tiempo en la novela", 
+           palette = pal$cat.brewer.Dark2.8[2])
 ```
+
 
 <br>
 

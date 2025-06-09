@@ -816,8 +816,277 @@ save(tsc_d,
 
 
 
+# El cid de las niñas
+
+Reproducimos ahora la misma lógica para la obra "El cid de las niñas" de Leandro Fernández de Moratín. Como en el caso de "Tres sombreros de copa", la obra se divide en actos y escenas. El objetivo es crear una base de datos con los diálogos, identificar los puntos de corte y crear las redes de diálogos dirigidas y no dirigidas.
+
+No obstante, ahora hay una diferencia crucial. Entre el código anterior y el siguiente está la aplicación de la IA para generar el código. Cómo veréis, el código es distinto, puesto que la formatación y la estructura cambian ligeramente. He subido el texto integral en chatGPT y empleado el siguiente prompt para que me generara el código en R:
+
+**Necesito que generes un script en R que estructure el texto de la siguiente manera: Acto, Escena, Personaje, texto. De ese modo, por ejemplo, "Acto I","Escena I", "Don Diego", "¿No han venido todavía?"\n˝Acto I","Escena I","Simón","No, señor." y así sucesivamente.  Genere un script en lenguaje R que permita dividir la información en formato csv, como en los ejemplos que le di. No olvides de identificar de forma adecuada los actos, las escenas y los personajes. Utilice el paquete stringi para la manipulación de los textos.**
 
 
+El resultado ha sido parecido al siguiente, la diferencia es que lo he simplificado luego para que fuera más sencillo:
+
+```{r}
+
+
+# Cargar librerías necesarias
+library(readr)
+library(dplyr)
+library(stringi)
+
+# Lee el archivo de la pieza
+texto <- read_lines("https://raw.githubusercontent.com/rodrodr/filoR/refs/heads/master/cid_ninas.txt")
+
+# Crea una base de datos para
+# almacenar los diálogos
+cid <- data.frame(Acto=character(), 
+                  Escena=character(), 
+                  Personaje=character(), 
+                  Texto=character(), 
+                  stringsAsFactors=FALSE)
+
+
+for (linea in texto) {
+  linea <- stri_trim_both(linea)
+  if (linea == "") next
+  
+  # FIN
+  if (stri_detect_regex(linea, "^\\s*FIN\\s*$")) break
+  
+  # Detectar ACTO aunque no esté solo en la línea
+  if (stri_detect_regex(linea, "Acto\\s+([IVXLCDM]+)")) {
+    numero_acto <- stri_match_first_regex(linea, "Acto\\s+([IVXLCDM]+)")[,2]
+    acto <- paste0("Acto ", numero_acto)
+    next
+  }
+  
+  # Escena (sí suele estar sola)
+  if (stri_detect_regex(linea, "^\\s*Escena\\s+([IVXLCDM]+)\\s*$")) {
+    numero_escena <- stri_match_first_regex(linea, "^\\s*Escena\\s+([IVXLCDM]+)\\s*$")[,2]
+    escena <- paste0("Escena ", numero_escena)
+    next
+  }
+  
+  # Diálogo
+  if (stri_detect_regex(linea, "^([A-ZÁÉÍÓÚÑÜ ]+)(?:\\.|\\.-)\\s+(.*)$")) {
+    partes <- stri_match_first_regex(linea, "^([A-ZÁÉÍÓÚÑÜ ]+)(?:\\.|\\.-)\\s+(.*)$")
+    personaje <- stri_trans_totitle(stri_trim_both(partes[,2]))
+    texto_dialogo <- stri_trim_both(partes[,3])
+    cid <- add_row(cid, Acto = acto, Escena = escena,
+                        Personaje = personaje, Texto = texto_dialogo)
+  }
+}
+
+
+cid$orden <- 1:nrow(cid)
+
+cid$Personaje[cid$Personaje=="Diego"] <- "Don Diego"
+cid$Personaje[cid$Personaje=="D Carlos"] <- "Don Carlos"
+
+# Vemos el resultado
+reactable(cid, resizable = T, wrap = T)
+
+```
+
+
+
+Ahora repetimos lo que hicimos con "Tres sombreros de copa" para crear redes de diálogo. Repetimos el mismo código, pero ahora con la nueva base de diálogos de "El cid de las niñas".
+
+
+### De datos a redes de diálogos
+
+Empezamos por la identificación de los puntos de corte en los diálogos.
+
+```{r message=F, warning=F, error=F}
+
+# Identifica los puntos de corte en los diálogos
+# que corresponden a transiciones de escena o
+# cuándo sale uno o más personajes y se empieza
+# otro dialogo o se trata de una respuesta al 
+# interlocutor anterior que no obtiene respuesta
+# y se pasa a un nuevo diálogo con otro personaje. 
+# Por lo tanto, no se puede considerar
+# como una continuación del dialogo anterior.
+nc <- c(78,80,83,89,91,93,95,104,105,154,161,171,
+        206,250,251,264,279,295,305,307,309,323,
+        325,326,329,330,332,335,345,347,357,392,
+        394,395,397,405,409,423,521,536,548,571,
+        600,615,624,639,644,645,660,724,736,779,
+        817,832,844,847)
+
+# Crea una variable corte con valor cero
+# para todos los diálogos
+cid$corte <- 0
+
+# En aquellos diálogos que representan
+# un corte, cambia de cero a uno para
+# establecer el punto de interrupción
+cid$corte[nc] <- 1
+
+```
+
+El siguiente paso resulta crucial. Necesitamos identificar el personaje al que se dirige el diálogo. Para ello, creamos una nueva variable en la base de datos llamada "personaje_B" que identificará dicho interlocutor. En este momento, emplearemos los puntos de interrupción o corte en los diálogos para determinar de forma correcta a quién se destina el habla.
+
+```{r message=F, warning=F, error=F}
+
+# Crea una variable vacía en la base de
+# datos para almacenar el personaje
+# que será el receptor de la respuesta
+cid$personaje_A <- cid$Personaje
+cid$personaje_B <- NA
+
+# Para cada diálogo de la pieza
+for(i in 1:(nrow(cid)-1)){
+  
+  # Si es la introducción del capitulo o de la obra,
+  # se pasa al siguiente diálogo
+  if(cid$personaje_A[i]=="Introducción") next
+
+  # Si se trata de un corte o fin de escena
+  # se considera como respuesta al personaje
+  # anterior (si no es la introducción de la escena)
+  if(cid$corte[i]==1){
+    
+    # Si el personaje anterior es la introducción
+    # se pasa al siguiente diálogo
+    if(cid$personaje_A[i-1]=="Introducción") next
+    
+    # Atribuye el personaje de destino del diálogo
+    # como en personaje anterior (respuesta final)
+    cid$personaje_B[i] <- cid$personaje_A[i-1]
+    
+  # En caso que no sea un corte de escena  
+  }else{ 
+    # El personaje de destino del diálogo
+    # es el inmediatamente posterior
+    cid$personaje_B[i] <- cid$personaje_A[i+1]
+  }
+}
+
+
+# Elimina los espacios en blanco al 
+# final de los nombres de los personajes
+cid$personaje_A <- trimws(cid$personaje_A)
+cid$personaje_B <- trimws(cid$personaje_B)
+
+```
+
+Finalmente, creamos la red de diálogos. Ya tenemos una variable con el que habla (*personaje_A*) y con quién dialoga (*personaje_B*). A continuación, crearemos una variable para contar cuántas veces hablan entre sí cada par de personajes y sumamos todos. El resultado es una red **dirigida** de diálogos.
+
+```{r message=F, warning=F, error=F}
+
+# Separa solo los pares de personaje
+# en diálogo
+res <- cid[,c("personaje_A","personaje_B")]
+res <- res[! is.na(res$personaje_B),]
+
+# Crea un contador para saber
+# cuántas veces cada par de personajes
+# ha dialogado
+res$veces <- 1
+
+# Elimina la introducción como personaje
+# de los dos tipos de red
+res <- res[res$personaje_A!="Introducción",]
+res <- res[res$personaje_B!="Introducción",]
+
+# Guarda los resultados en un nuevo
+# objeto para crear una red no
+# direccional
+rea <- res
+
+# Suma las veces en que se repiten
+# los pares de personajes (red dirigida)
+res <- aggregate(list(freq=res$veces),
+                 by=list(personaje_A=res$personaje_A,
+                         personaje_B=res$personaje_B),
+                 FUN=sum)
+
+# ordena en orden decendiente por la frecuencia 
+# en que dialogan 
+res <- res[order(res$freq, decreasing = T),]
+
+# Vemos el resultado
+reactable(res, resizable = T, wrap = F)
+
+```
+
+Como podemos observar, la pareja **Doña Irene-Don Diego** es la que más dialoga en la obra. Viene seguida de las díadas **Simón-Don Diego** y **Rita-Doña Franscisca**.
+
+Concentrémonos ahora en la creación de la red no dirigida. Se trata de la última etapa en la preparación de los datos. Como ya hemos mencionado, también nos interesa saber cuántas veces han dialogado dos personajes sin importar quién es el que inicia la conversación. 
+
+```{r message=F, warning=F, error=F}
+
+# Carga el paquete necesario para lidiar con
+# grafos
+library(igraph)
+
+# Uniformiza los valores duplicados
+
+# 1) Crea un grafo NO DIRECCIONAL a partir de 
+# la red de personajes
+g <- graph_from_data_frame(
+            rea[,c("personaje_A","personaje_B")], 
+            directed=FALSE)
+
+# 2) Simplifica la estructura para hacer con que
+# todos los valores estén en una sola dirección
+# pero sin remover los repetidos, pues queremos
+# contarlos
+g <- simplify(g, 
+              remove.multiple = F, 
+              remove.loops = F)
+
+# Convierte la red en una base de datos
+ax <- igraph::as_data_frame(g)
+
+# Cuenta cuántas veces se repite cada par
+ax$freq <- 1
+
+# Suma las veces en que se repiten
+# los pares de personajes (red no dirigida)
+aa <- aggregate(list(freq=ax$freq),
+                by=list(personaje_A=ax$from,
+                        personaje_B=ax$to),
+                FUN=sum)
+
+# Ordena los resultados en orden descendente
+aa <- aa[order(aa$freq, decreasing = T),]
+
+# Vemos los resultados
+reactable(aa, resizable = T, wrap = F)
+
+```
+
+Finalmente, estandarizamos los nombres de las bases de datos y las guardamos en un archivo de R.
+
+```{r message=F, warning=F, error=F, eval=F}
+
+# Estandariza los nombres de las bases 
+# de datos
+
+# Tres sombreros de copa - dialogos
+cid_d <- cid    
+
+# Tres sombreros de copa - red de personajes (no dirigida)
+cid_rn <- aa   
+
+# Tres sombreros de copa - red de personajes (dirigida)
+cid_rd <- res  
+
+# Guarda los resultados
+# Elegid una ubicación en vuestro
+# ordenador donde podáis rescatar
+# los datos luego:
+# "C:/FiloR/cid_ninas.RData", 
+# por ejemplo
+save(cid_d, 
+     cid_rd, 
+     cid_rd, 
+     file="../textos/cid_ninas.RData")
+
+```
 
 
 
