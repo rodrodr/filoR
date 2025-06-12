@@ -440,7 +440,7 @@ plotKeyness(cp,
 
 <br>
 
-De ese modo, las palabras que se encuentren lo más lejos del eje horizontal y vertical serán las más específicas del capítulo. Por otra parte, aquellas que se encuentren más a la derecha, so. las más frecuentes en el capítulo 8. Por lo tanto, términos como "visita", "cocina", "marqués" se destacan tanto por su particular incidencia en el capítulo, como por su alta frecuencia. También vemos en rojo las palabras empleadas menos que lo esperado.
+De ese modo, las palabras que se encuentren lo más lejos del eje horizontal y vertical serán las más específicas del capítulo. Por otra parte, aquellas que se encuentren más a la derecha, son las más frecuentes en el capítulo 8. Por lo tanto, términos como "visita", "cocina", "marqués" se destacan tanto por su particular incidencia en el capítulo, como por su alta frecuencia. También vemos en rojo las palabras menos empleadas que lo esperado.
 
 Si queremos analizar cuáles son las expresiones de peso en los demás capítulos, basta cambiar el argumento `ref.cat` por el número del capítulo que nos interese. Estos pasos exploratorios nos permiten tener una idea de los temas y personajes que aparecen en cada capítulo y, por consiguiente, de las palabras clave que los caracterizan.
 
@@ -450,11 +450,11 @@ Entendemos por codificación temática el proceso de análisis de un texto con e
 
 Como temas, por ejemplo, podemos tener el tiempo (las estaciones del año, el paso del tiempo, el momento del día, las fiestas religiosas), el espacio (el hogar, los ambientes de interacción social, la iglesia), la familia (los padres, los hijos, los hermanos), la sociedad (los nobles, los plebeyos, los campesinos), entre otros.
 
-La forma más tradicional de codificación temática consiste en imprimir los documentos, leerlos detenidamente y realizar marcas o anotaciones en los márgenes. Sin embargo, en la era digital, podemos emplear herramientas de análisis de texto que nos ayudan a llevar a cabo esta tarea de forma más rápida y eficiente. Los diccionarios (o léxicos) son una de las más comunes.
+La forma más "tradicional" de codificación temática consiste en imprimir los documentos, leerlos detenidamente y realizar marcas o anotaciones en los márgenes. Sin embargo, en la era digital, podemos emplear herramientas de análisis de texto que nos ayudan a llevar a cabo esta tarea de forma más rápida y eficiente. Los diccionarios (o léxicos) son una de las más comunes.
 
 ### El uso de diccionarios
 
-Un diccionario corresponde a un conjunto de palabras clave asociados a un tema. Por ejemplo, cuando pienso en la familia, me vienen a la mente palabras como "padre", "madre", "hijo", "hermano", "hermana","tío", "tía", "abuelo", "abuela". Algunos más radicales incluirían los cuñados y parientes más lejanos. Si lo expresara de forma algorítmica sería algo así:
+Un diccionario corresponde a un conjunto de palabras clave asociados a un tema. Por ejemplo, cuando pienso en la familia, me vienen a la mente palabras como "padre", "madre", "hijo", "hermano", "hermana","tío", "tía", "abuelo", "abuela". Algunos, más radicales, incluirían los cuñados y parientes más lejanos. Si lo expresara de forma algorítmica sería algo así:
 
 familia = c("padre", "madre", "hijo", "hermano", "hermana", "tío", "tía", "abuelo", "abuela")
 
@@ -509,20 +509,20 @@ tagCorpus(cp,
 
 <br>
 
-El resultado son frases palabras pintadas de distintos colores de acuerdo con los temas a que pertenecen, como si hubiesen sido resaltadas con un marcador. De ese modo, se pude realizar una lectura rápida y visual de la incidencia de los temas en el texto, manteniendo todo el contexto de la obra.
+El resultado es una lista ordenada de frases con palabras pintadas de distintos colores de acuerdo con los temas a que pertenecen, como si hubiesen sido resaltadas con un marcador. De ese modo, se pude realizar una lectura rápida y visual de la incidencia de los temas en el texto, manteniendo todo el contexto de la obra.
 
 ### Ubicación de temas en el texto
 
-La tabla anterior resulta muy útil si queremos examinar las palabras en su contexto y regresar al documento para entender mejor cómo se utilizan. Sin embargo, si queremos tener una visión general de la distribución de los temas en el texto, podemos utilizar un gráfico de dispersión léxica. Se trata de una técnica de visualización de datos que representa un texto como un intervalor cortado por puntos o líneas verticales que corresponden a las palabras clave encontradas.
+La tabla anterior resulta muy útil si queremos examinar las palabras en su contexto y regresar al documento para entender mejor cómo se utilizan. Sin embargo, si queremos tener una visión general de la distribución de los temas en el texto, podemos utilizar un gráfico de dispersión léxica. Se trata de una técnica de visualización de datos que representa un texto como un intervalo cortado por puntos o líneas verticales que corresponden a las palabras clave encontradas.
 
 La función `plotLexDiv` del paquete **tenet** permite generar un gráfico de dispersión léxica que muestra la distribución de las palabras clave en el texto coloreadas por tema del diccionario. No se recomienda utilizar muchas categorías en un solo gráfico, puesto que la visualización se vuelve confusa y resulta muy difícil identificar patrones.
 
-El siguiente código genera un gráfico de dispersión léxica, utilizando un diccionario con palabras clave asociadas a los temas de espacio y tiempo.
+Los siguientes códigos generan dos gráficos de dispersión léxica, utilizando un diccionario con palabras clave asociadas a los temas de espacio y tiempo.
 
 ```{r, warning=F, message=F, error=F, fig.width=10, fig.height=8}
 
 # Crea un diccionario solo
-# con dos temas: espacio y tiempo
+# con el tema espacio
 dicf <- dictionary(
   list(
     espacio=c("casino","catedral","vivero",
@@ -544,7 +544,7 @@ plotLexDiv(cp,
 ```{r, warning=F, message=F, error=F, fig.width=10, fig.height=8}
 
 # Crea un diccionario solo
-# con dos temas: espacio y tiempo
+# con el tema tiempo
 dicf <- dictionary(
   list(
     tiempo=c("otoño","verano","invierno","primavera",
@@ -1286,7 +1286,7 @@ Esta escala se podría interpretar de distintas maneras. Una de ellas es que los
 
 También podríamos leer los resultados de acuerdo con el protagonismo o mayor centralidad de ciertos personajes según el punto de la escala. Más a la izquierda predominan los Marqueses, Álvaro Mesía (antes de su relación con Ana Ozores) y la sociedad vetustense. En el centro se sitúa Fermín de Pas, que se interpone entre la vida privada de Ana y la vida en sociedad. En la derecha encontramos a Víctor, su esposo, Álvaro (hechos consumados) y en el extremo, la familia de Ana, especialmente en su infancia.
 
-De todas formas, ambas interpretaciones sugieren una dualidad entre la vida íntima y relativamente reservada de Ana en contraste con la vida social y pública de Vetusta. Los dos mundos se tocan en ocasiones concretas por intermedio de algunos actores que transitan dentre ellos, como Fermín de Pas o Álvaro Mesía.
+De todas formas, ambas interpretaciones sugieren una dualidad entre la vida íntima y relativamente reservada de Ana en contraste con la vida social y pública de Vetusta. Los dos mundos se tocan en ocasiones concretas por intermedio de algunos actores que transitan entre ellos, como Fermín de Pas o Álvaro Mesía.
 
 ### Análisis de correspondencia (*CA*)
 
