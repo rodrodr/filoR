@@ -527,6 +527,149 @@ girafe(ggobj = p, width = 9, height = 10)
 
 
 
+```{r, echo=TRUE, eval=F, class.source="fold-hide"}
+
+ag <- aggregate(dialogo ~ personaje_A, 
+                data = tsc_d, 
+                FUN = paste,
+                collapse = "\n")
+
+
+nn <- unique(zz$membership)
+
+nn <- which(table(zz$membership)>nclu)
+nn <- as.numeric(nn)
+
+li <- list()
+dt <- data.frame()
+
+for(i in 1:length(nn)){
+  
+  if(nchar(nn[i])==1){
+    ze <- "0"
+  }else{
+    ze <- ""
+  } 
+  
+  nm <- paste0("Tópico ",ze, nn[i])
+  
+
+  li[[i]] <- paste0("\\b",as.character(zz$word[zz$membership == nn[i]]), "\\b")
+
+  names(li)[[i]] <- nm
+  
+  tt <- as.character(zz$word[zz$membership == nn[i]])[1:10]
+  tt <- tt[! is.na(tt)]
+  tm <- paste(tt, collapse=", ")
+  
+  dt <- rbind(dt, data.frame(level1=nm, terms=tm))
+  
+}
+
+
+dic <- dictionary(li)
+
+cp <- corpus(ag, text_field = "dialogo", docid_field = "personaje_A")
+
+docvars(cp, "personaje_A") <- ag$personaje_A 
+
+# Filtra las palabras clave empleando
+# el nuevo diccionario
+
+ft <- countKeywords(cp, quietly = T,
+                    dic, 
+                    group.var = "personaje_A", 
+                    rel.freq = T)
+
+
+
+ft <- ft[ft$frequency > 0,]
+
+ft <- ft[ft$keyword!="da",]
+
+ft <- ft[!ft$groups %in%c("CORO DE VIEJOS EXTRAÑOS","OTROS","LAS TRES","TODOS","UNOS"),]
+
+
+a1 <- aggregate(frequency ~ groups+level1, 
+                data = ft, 
+                FUN = sum)
+
+
+
+a1 <- a1[a1$groups!="Introducción",]
+
+a2 <- aggregate(frequency ~ level1, 
+                data = a1, 
+                FUN = sum)
+
+names(a2) <- c("level1", "tot_freq")
+
+a1 <- merge(a1, a2, by = "level1")
+
+a1$per_topic <- round(a1$frequency/a1$tot_freq*100, 1)
+
+a1$freq_mil <- round(a1$frequency*1000, 1)
+
+library(stringi)
+library(ggplot2)
+
+a1$groups <- stri_trans_totitle(a1$groups)
+
+a1 <- merge(a1, dt, by="level1")
+
+a1$terms <- trimws(a1$terms)
+
+
+for(i in 1:nrow(a1)){
+  
+  nn <- max(nchar(a1$terms))-nchar(a1$terms[i])
+  
+  if(nn>0){
+    
+    a1$terms[i] <- paste0(a1$terms[i], paste0(rep(" ",nn), collapse = ""))
+  }
+  
+}
+
+
+# Crea el gráfico básico
+p <- plotGrid(a1, standardize = F,axis = "x",
+         palette = pal$cat.ggsci.d3_category_a.20,
+         x="groups", 
+         y="level1", 
+         size="freq_mil", 
+         color="groups", 
+         width_svg = 9, height_svg = 10, 
+         leg.size="Frecuencia\n(por mil)", 
+         leg.color="Personaje",
+         grid.color="grey99", interactive = F)
+
+# Añade títulos
+p <- p + labs(title="Tres sombreros de copa",
+              subtitle="Principales términos de cada tópico por cada mil palabras y presencia\nde cada personaje en cada tópico.")+
+         theme(plot.title.position = "plot", title=element_text(size=20))
+
+# Añade el texto de la lista de palabras
+p <- p + geom_text(aes(y=level1, 
+                       label=terms), 
+                   x=-1.5, 
+                   color="#284283", # grey70 
+                   size=3.8, # 3
+                   hjust=0, 
+                   vjust=2, # 3.5
+                   family="Homemade Apple") # Homemade Apple
+
+# Evita que se corten las etiquetas
+p <- p + coord_cartesian(clip = 'off')
+
+# Visualiza el gráfico interactivo              
+library(ggiraph)
+girafe(ggobj = p, width = 9, height = 10)
+
+
+```
+
+
 ## Etiquetado léxico
 
 Podemos ir un paso más allá en la identificación de tópicos con la ayuda del etiquetado de partes del discurso (*POS Tagging*, en su sigla en inglés). Se trata de un proceso que consiste en asignar a cada palabra de un texto una etiqueta que indica su categoría gramatical. Para ello, emplearemos el paquete `udpipe` y el modelo previamente entrenado en español para identificar las palabras de cada diálogo. Una vez etiquetadas, seleccionaremos solamente los sustantivos y adjetivos. Con esta información, tendremos más insumos para enriquecer nuestra comprensión de los tópicos presentes en la obra.
