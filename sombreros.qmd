@@ -502,7 +502,7 @@ p <- plotGrid(a1, standardize = F,axis = "x",
 
 # Añade títulos
 p <- p + labs(title="Tres sombreros de copa",
-              subtitle="Principales términos de cada tópico por cada mil palabras.")+
+              subtitle="Principales términos de cada tópico por cada mil palabras y presencia\nde cada personaje en cada tópico.")+
          theme(plot.title.position = "plot", title=element_text(size=20))
 
 # Añade el texto de la lista de palabras
