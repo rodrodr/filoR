@@ -816,9 +816,9 @@ save(tsc_d,
 
 
 
-# El cid de las niñas
+# El si de las niñas
 
-Reproducimos ahora la misma lógica para la obra "El cid de las niñas" de Leandro Fernández de Moratín. Como en el caso de "Tres sombreros de copa", la obra se divide en actos y escenas. El objetivo es crear una base de datos con los diálogos, identificar los puntos de corte y crear las redes de diálogos dirigidas y no dirigidas.
+Reproducimos ahora la misma lógica para la obra "El sí de las niñas" de Leandro Fernández de Moratín. Como en el caso de "Tres sombreros de copa", la obra se divide en actos y escenas. El objetivo es crear una base de datos con los diálogos, identificar los puntos de corte y crear las redes de diálogos dirigidas y no dirigidas.
 
 No obstante, ahora hay una diferencia crucial. Entre el código anterior y el siguiente está la aplicación de la IA para generar el código. Cómo veréis, el código es distinto, puesto que la formatación y la estructura cambian ligeramente. He subido el texto integral en chatGPT y empleado el siguiente prompt para que me generara el código en R:
 
@@ -836,11 +836,11 @@ library(dplyr)
 library(stringi)
 
 # Lee el archivo de la pieza
-texto <- read_lines("https://raw.githubusercontent.com/rodrodr/filoR/refs/heads/master/cid_ninas.txt")
+texto <- read_lines("https://raw.githubusercontent.com/rodrodr/filoR/refs/heads/master/si_ninas.txt")
 
 # Crea una base de datos para
 # almacenar los diálogos
-cid <- data.frame(Acto=character(), 
+si <- data.frame(Acto=character(), 
                   Escena=character(), 
                   Personaje=character(), 
                   Texto=character(), 
@@ -873,25 +873,25 @@ for (linea in texto) {
     partes <- stri_match_first_regex(linea, "^([A-ZÁÉÍÓÚÑÜ ]+)(?:\\.|\\.-)\\s+(.*)$")
     personaje <- stri_trans_totitle(stri_trim_both(partes[,2]))
     texto_dialogo <- stri_trim_both(partes[,3])
-    cid <- add_row(cid, Acto = acto, Escena = escena,
+    si <- add_row(si, Acto = acto, Escena = escena,
                         Personaje = personaje, Texto = texto_dialogo)
   }
 }
 
 
-cid$orden <- 1:nrow(cid)
+si$orden <- 1:nrow(si)
 
-cid$Personaje[cid$Personaje=="Diego"] <- "Don Diego"
-cid$Personaje[cid$Personaje=="D Carlos"] <- "Don Carlos"
+si$Personaje[si$Personaje=="Diego"] <- "Don Diego"
+si$Personaje[si$Personaje=="D Carlos"] <- "Don Carlos"
 
 # Vemos el resultado
-reactable(cid, resizable = T, wrap = T)
+reactable(si, resizable = T, wrap = T)
 
 ```
 
 
 
-Ahora repetimos lo que hicimos con "Tres sombreros de copa" para crear redes de diálogo. Repetimos el mismo código, pero ahora con la nueva base de diálogos de "El cid de las niñas".
+Ahora repetimos lo que hicimos con "Tres sombreros de copa" para crear redes de diálogo. Repetimos el mismo código, pero ahora con la nueva base de diálogos de "El sí de las niñas".
 
 
 ### De datos a redes de diálogos
@@ -917,12 +917,12 @@ nc <- c(78,80,83,89,91,93,95,104,105,154,161,171,
 
 # Crea una variable corte con valor cero
 # para todos los diálogos
-cid$corte <- 0
+si$corte <- 0
 
 # En aquellos diálogos que representan
 # un corte, cambia de cero a uno para
 # establecer el punto de interrupción
-cid$corte[nc] <- 1
+si$corte[nc] <- 1
 
 ```
 
@@ -933,42 +933,42 @@ El siguiente paso resulta crucial. Necesitamos identificar el personaje al que s
 # Crea una variable vacía en la base de
 # datos para almacenar el personaje
 # que será el receptor de la respuesta
-cid$personaje_A <- cid$Personaje
-cid$personaje_B <- NA
+si$personaje_A <- si$Personaje
+si$personaje_B <- NA
 
 # Para cada diálogo de la pieza
-for(i in 1:(nrow(cid)-1)){
+for(i in 1:(nrow(si)-1)){
   
   # Si es la introducción del capitulo o de la obra,
   # se pasa al siguiente diálogo
-  if(cid$personaje_A[i]=="Introducción") next
+  if(si$personaje_A[i]=="Introducción") next
 
   # Si se trata de un corte o fin de escena
   # se considera como respuesta al personaje
   # anterior (si no es la introducción de la escena)
-  if(cid$corte[i]==1){
+  if(si$corte[i]==1){
     
     # Si el personaje anterior es la introducción
     # se pasa al siguiente diálogo
-    if(cid$personaje_A[i-1]=="Introducción") next
+    if(si$personaje_A[i-1]=="Introducción") next
     
     # Atribuye el personaje de destino del diálogo
     # como en personaje anterior (respuesta final)
-    cid$personaje_B[i] <- cid$personaje_A[i-1]
+    si$personaje_B[i] <- si$personaje_A[i-1]
     
   # En caso que no sea un corte de escena  
   }else{ 
     # El personaje de destino del diálogo
     # es el inmediatamente posterior
-    cid$personaje_B[i] <- cid$personaje_A[i+1]
+    si$personaje_B[i] <- si$personaje_A[i+1]
   }
 }
 
 
 # Elimina los espacios en blanco al 
 # final de los nombres de los personajes
-cid$personaje_A <- trimws(cid$personaje_A)
-cid$personaje_B <- trimws(cid$personaje_B)
+si$personaje_A <- trimws(si$personaje_A)
+si$personaje_B <- trimws(si$personaje_B)
 
 ```
 
@@ -978,7 +978,7 @@ Finalmente, creamos la red de diálogos. Ya tenemos una variable con el que habl
 
 # Separa solo los pares de personaje
 # en diálogo
-res <- cid[,c("personaje_A","personaje_B")]
+res <- si[,c("personaje_A","personaje_B")]
 res <- res[! is.na(res$personaje_B),]
 
 # Crea un contador para saber
@@ -1067,24 +1067,24 @@ Finalmente, estandarizamos los nombres de las bases de datos y las guardamos en 
 # de datos
 
 # Tres sombreros de copa - dialogos
-cid_d <- cid    
+si_d <- si    
 
 # Tres sombreros de copa - red de personajes (no dirigida)
-cid_rn <- aa   
+si_rn <- aa   
 
 # Tres sombreros de copa - red de personajes (dirigida)
-cid_rd <- res  
+si_rd <- res  
 
 # Guarda los resultados
 # Elegid una ubicación en vuestro
 # ordenador donde podáis rescatar
 # los datos luego:
-# "C:/FiloR/cid_ninas.RData", 
+# "C:/FiloR/si_ninas.RData", 
 # por ejemplo
-save(cid_d, 
-     cid_rd, 
-     cid_rd, 
-     file="../textos/cid_ninas.RData")
+save(si_d, 
+     si_rd, 
+     si_rd, 
+     file="../textos/si_ninas.RData")
 
 ```
 
