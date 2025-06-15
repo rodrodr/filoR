@@ -91,7 +91,7 @@ Con eso, tendréis para instalar los paquetes necesarios para el curso.
 ```{r, eval=F}
 
 # Crea un vector con los paquetes a instalar
-pc <- c("quanteda","quanteda.textplots","pdftools",
+pc <- c("miniUI","quanteda","quanteda.textplots","pdftools",
         "quanteda.textmodels","quanteda.textstats",
         "stringi","readr","gutenbergr","ggplot2",
         "ggrepel","reactable","tidyverse","devtools",
